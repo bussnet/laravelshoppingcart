@@ -38,13 +38,13 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 	public function test_total_without_condition() {
 		$this->fillCart();
 
-		$this->assertEquals(18749, $this->cart->getSubTotal(), 'Cart should have sub total of 18749');
+		$this->assertEquals(18749, $this->cart->subTotal(), 'Cart should have sub total of 18749');
 
 		// no changes in subtotal as the condition's target added was for total
-		$this->assertEquals(18749, $this->cart->getSubTotal(), 'Cart should have sub total of 18749');
+		$this->assertEquals(18749, $this->cart->subTotal(), 'Cart should have sub total of 18749');
 
 		// total should be the same as subtotal
-		$this->assertEquals(18749, $this->cart->getTotal(), 'Cart should have a total of 18749');
+		$this->assertEquals(18749, $this->cart->total(), 'Cart should have a total of 18749');
 	}
 
 	protected function fillCart() {
@@ -78,7 +78,7 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 	public function test_total_with_condition() {
 		$this->fillCart();
 
-		$this->assertEquals(18749, $this->cart->getSubTotal(), 'Cart should have sub total of 18749');
+		$this->assertEquals(18749, $this->cart->subTotal(), 'Cart should have sub total of 18749');
 
 		// add condition
 		$condition = new CartCondition(array(
@@ -91,16 +91,16 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 		$this->cart->condition($condition);
 
 		// no changes in subtotal as the condition's target added was for total
-		$this->assertEquals(18749, $this->cart->getSubTotal(), 'Cart should have sub total of 18749');
+		$this->assertEquals(18749, $this->cart->subTotal(), 'Cart should have sub total of 18749');
 
 		// total should be changed
-		$this->assertEquals(21093, $this->cart->getTotal(), 'Cart should have a total of 21093');
+		$this->assertEquals(21093, $this->cart->total(), 'Cart should have a total of 21093');
 	}
 
 	public function test_total_with_multiple_conditions_added_scenario_one() {
 		$this->fillCart();
 
-		$this->assertEquals(18749, $this->cart->getSubTotal(), 'Cart should have sub total of 18749');
+		$this->assertEquals(18749, $this->cart->subTotal(), 'Cart should have sub total of 18749');
 
 		// add condition
 		$condition1 = new CartCondition(array(
@@ -120,16 +120,16 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 		$this->cart->condition($condition2);
 
 		// no changes in subtotal as the condition's target added was for subtotal
-		$this->assertEquals(18749, $this->cart->getSubTotal(), 'Cart should have sub total of 18749');
+		$this->assertEquals(18749, $this->cart->subTotal(), 'Cart should have sub total of 18749');
 
 		// total should be changed
-		$this->assertEquals(22593, $this->cart->getTotal(), 'Cart should have a total of 22593');
+		$this->assertEquals(22593, $this->cart->total(), 'Cart should have a total of 22593');
 	}
 
 	public function test_total_with_multiple_conditions_added_scenario_two() {
 		$this->fillCart();
 
-		$this->assertEquals(18749, $this->cart->getSubTotal(), 'Cart should have sub total of 18749');
+		$this->assertEquals(18749, $this->cart->subTotal(), 'Cart should have sub total of 18749');
 
 		// add condition
 		$condition1 = new CartCondition(array(
@@ -149,16 +149,16 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 		$this->cart->condition($condition2);
 
 		// no changes in subtotal as the condition's target added was for subtotal
-		$this->assertEquals(18749, $this->cart->getSubTotal(), 'Cart should have sub total of 18749');
+		$this->assertEquals(18749, $this->cart->subTotal(), 'Cart should have sub total of 18749');
 
 		// total should be changed
-		$this->assertEquals(19593, $this->cart->getTotal(), 'Cart should have a total of 19593');
+		$this->assertEquals(19593, $this->cart->total(), 'Cart should have a total of 19593');
 	}
 
 	public function test_total_with_multiple_conditions_added_scenario_three() {
 		$this->fillCart();
 
-		$this->assertEquals(18749, $this->cart->getSubTotal(), 'Cart should have sub total of 18749');
+		$this->assertEquals(18749, $this->cart->subTotal(), 'Cart should have sub total of 18749');
 
 		// add condition
 		$condition1 = new CartCondition(array(
@@ -178,16 +178,16 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 		$this->cart->condition($condition2);
 
 		// no changes in subtotal as the condition's target added was for total
-		$this->assertEquals(18749, $this->cart->getSubTotal(), 'Cart should have sub total of 18749');
+		$this->assertEquals(18749, $this->cart->subTotal(), 'Cart should have sub total of 18749');
 
 		// total should be changed
-		$this->assertEquals(14905, $this->cart->getTotal(), 'Cart should have a total of 14905');
+		$this->assertEquals(14905, $this->cart->total(), 'Cart should have a total of 14905');
 	}
 
 	public function test_cart_multiple_conditions_can_be_added_once_by_array() {
 		$this->fillCart();
 
-		$this->assertEquals(18749, $this->cart->getSubTotal(), 'Cart should have sub total of 18749');
+		$this->assertEquals(18749, $this->cart->subTotal(), 'Cart should have sub total of 18749');
 
 		// add condition
 		$condition1 = new CartCondition(array(
@@ -206,16 +206,16 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 		$this->cart->condition([$condition1, $condition2]);
 
 		// no changes in subtotal as the condition's target added was for total
-		$this->assertEquals(18749, $this->cart->getSubTotal(), 'Cart should have sub total of 18749');
+		$this->assertEquals(18749, $this->cart->subTotal(), 'Cart should have sub total of 18749');
 
 		// total should be changed
-		$this->assertEquals(14905, $this->cart->getTotal(), 'Cart should have a total of 14905');
+		$this->assertEquals(14905, $this->cart->total(), 'Cart should have a total of 14905');
 	}
 
 	public function test_total_with_multiple_conditions_added_scenario_four() {
 		$this->fillCart();
 
-		$this->assertEquals(18749, $this->cart->getSubTotal(), 'Cart should have sub total of 18749');
+		$this->assertEquals(18749, $this->cart->subTotal(), 'Cart should have sub total of 18749');
 
 		// add condition
 		$condition1 = new CartCondition(array(
@@ -235,10 +235,10 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 		$this->cart->condition($condition2);
 
 		// no changes in subtotal as the condition's target added was for total
-		$this->assertEquals(18749, $this->cart->getSubTotal(), 'Cart should have sub total of 18749');
+		$this->assertEquals(18749, $this->cart->subTotal(), 'Cart should have sub total of 18749');
 
 		// total should be changed
-		$this->assertEquals(17905, $this->cart->getTotal(), 'Cart should have a total of 17905');
+		$this->assertEquals(17905, $this->cart->total(), 'Cart should have a total of 17905');
 	}
 
 	public function test_add_item_with_condition() {
@@ -260,8 +260,8 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 
 		$this->cart->add($item);
 
-		$this->assertEquals(95, $this->cart->get(456)->getPriceSumWithConditions());
-		$this->assertEquals(95, $this->cart->getSubTotal());
+		$this->assertEquals(95, $this->cart->get(456)->priceSumWithConditions());
+		$this->assertEquals(95, $this->cart->subTotal());
 	}
 
 	public function test_add_item_with_multiple_item_conditions_in_multiple_condition_instance() {
@@ -295,8 +295,8 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 
 		$this->cart->add($item);
 
-		$this->assertEquals(8000, $this->cart->get(456)->getPriceSumWithConditions(), 'Item subtotal with 1 item should be 80');
-		$this->assertEquals(8000, $this->cart->getSubTotal(), 'Cart subtotal with 1 item should be 80');
+		$this->assertEquals(8000, $this->cart->get(456)->priceSumWithConditions(), 'Item subtotal with 1 item should be 80');
+		$this->assertEquals(8000, $this->cart->subTotal(), 'Cart subtotal with 1 item should be 80');
 	}
 
 	public function test_add_item_with_multiple_item_conditions_with_one_condition_wrong_target() {
@@ -342,8 +342,8 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 
 		$this->cart->add($item);
 
-		$this->assertEquals(8500, $this->cart->get(456)->getPriceSumWithConditions(), 'Cart subtotal with 1 item should be 85');
-		$this->assertEquals(8500, $this->cart->getSubTotal(), 'Cart subtotal with 1 item should be 85');
+		$this->assertEquals(8500, $this->cart->get(456)->priceSumWithConditions(), 'Cart subtotal with 1 item should be 85');
+		$this->assertEquals(8500, $this->cart->subTotal(), 'Cart subtotal with 1 item should be 85');
 	}
 
 	public function test_add_item_condition() {
@@ -403,7 +403,7 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 
 		// Since the product price is 20 and the condition reduces it by 25,
 		// check that the item's price has been prevented from dropping below zero.
-		$this->assertEquals(0, $this->cart->get($item['id'])->getPriceSumWithConditions(), "The item's price should be prevented from going below zero.");
+		$this->assertEquals(0, $this->cart->get($item['id'])->priceSumWithConditions(), "The item's price should be prevented from going below zero.");
 	}
 
 	public function test_get_cart_condition_by_condition_name() {
@@ -645,7 +645,7 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 
 		$this->cart->condition([$cartCondition1, $cartCondition2]);
 
-		$subTotal = $this->cart->getSubTotal();
+		$subTotal = $this->cart->subTotal();
 
 		$this->assertEquals(100, $subTotal, 'Subtotal should be 100');
 

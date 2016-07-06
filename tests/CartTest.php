@@ -38,9 +38,9 @@ class CartTest extends PHPUnit_Framework_TestCase {
 		$this->cart->add(455, 'Sample Item', 10099, 2, array());
 
 		$this->assertFalse($this->cart->isEmpty(), 'Cart should not be empty');
-		$this->assertEquals(1, $this->cart->getContent()->count(), 'Cart content should be 1');
-		$this->assertEquals(455, $this->cart->getContent()->first()['id'], 'Item added has ID of 455 so first content ID should be 455');
-		$this->assertEquals(10099, $this->cart->getContent()->first()['price'], 'Item added has price of 10099 so first content price should be 10099');
+		$this->assertEquals(1, $this->cart->items()->count(), 'Cart content should be 1');
+		$this->assertEquals(455, $this->cart->items()->first()['id'], 'Item added has ID of 455 so first content ID should be 455');
+		$this->assertEquals(10099, $this->cart->items()->first()['price'], 'Item added has price of 10099 so first content price should be 10099');
 	}
 
 	public function test_cart_can_add_items_as_array() {
@@ -55,9 +55,9 @@ class CartTest extends PHPUnit_Framework_TestCase {
 		$this->cart->add($item);
 
 		$this->assertFalse($this->cart->isEmpty(), 'Cart should not be empty');
-		$this->assertEquals(1, $this->cart->getContent()->count(), 'Cart should have 1 item on it');
-		$this->assertEquals(456, $this->cart->getContent()->first()['id'], 'The first content must have ID of 456');
-		$this->assertEquals('Sample Item', $this->cart->getContent()->first()['name'], 'The first content must have name of "Sample Item"');
+		$this->assertEquals(1, $this->cart->items()->count(), 'Cart should have 1 item on it');
+		$this->assertEquals(456, $this->cart->items()->first()['id'], 'The first content must have ID of 456');
+		$this->assertEquals('Sample Item', $this->cart->items()->first()['name'], 'The first content must have name of "Sample Item"');
 	}
 
 	public function test_cart_can_add_items_with_multidimensional_array() {
@@ -88,7 +88,7 @@ class CartTest extends PHPUnit_Framework_TestCase {
 		$this->cart->add($items);
 
 		$this->assertFalse($this->cart->isEmpty(), 'Cart should not be empty');
-		$this->assertCount(3, $this->cart->getContent()->toArray(), 'Cart should have 3 items');
+		$this->assertCount(3, $this->cart->items()->toArray(), 'Cart should have 3 items');
 	}
 
 	public function test_cart_can_add_item_without_attributes() {
@@ -151,9 +151,9 @@ class CartTest extends PHPUnit_Framework_TestCase {
 		$this->cart->add($item);
 
 		$this->assertFalse($this->cart->isEmpty(), 'Cart should not be empty');
-		$this->assertCount(2, $this->cart->getContent()->first()['attributes'], 'Item\'s attribute should have two');
-		$this->assertEquals('L', $this->cart->getContent()->first()->attributes->size, 'Item should have attribute size of L');
-		$this->assertEquals('blue', $this->cart->getContent()->first()->attributes->color, 'Item should have attribute color of blue');
+		$this->assertCount(2, $this->cart->items()->first()['attributes'], 'Item\'s attribute should have two');
+		$this->assertEquals('L', $this->cart->items()->first()->attributes->size, 'Item should have attribute size of L');
+		$this->assertEquals('blue', $this->cart->items()->first()->attributes->color, 'Item should have attribute color of blue');
 		$this->assertTrue($this->cart->get(456)->has('attributes'), 'Item should have attributes');
 		$this->assertEquals('L', $this->cart->get(456)->get('attributes')->size);
 	}
@@ -230,7 +230,7 @@ class CartTest extends PHPUnit_Framework_TestCase {
 		// add a price in a string format should be converted to int
 		$this->cart->add(455, 'Sample Item', '10099', 2, array());
 
-		$this->assertInternalType('int', $this->cart->getContent()->first()['price'], 'Cart price should be a int');
+		$this->assertInternalType('int', $this->cart->items()->first()['price'], 'Cart price should be a int');
 	}
 
 	public function test_it_removes_an_item_on_cart_by_item_id() {
@@ -264,8 +264,8 @@ class CartTest extends PHPUnit_Framework_TestCase {
 
 		$this->cart->remove($removeItemId);
 
-		$this->assertCount(2, $this->cart->getContent()->toArray(), 'Cart must have 2 items left');
-		$this->assertFalse($this->cart->getContent()->has($removeItemId), 'Cart must have not contain the remove item anymore');
+		$this->assertCount(2, $this->cart->items()->toArray(), 'Cart must have 2 items left');
+		$this->assertFalse($this->cart->items()->has($removeItemId), 'Cart must have not contain the remove item anymore');
 	}
 
 	public function test_cart_sub_total() {
@@ -295,12 +295,12 @@ class CartTest extends PHPUnit_Framework_TestCase {
 
 		$this->cart->add($items);
 
-		$this->assertEquals(18749, $this->cart->getSubTotal(), 'Cart should have sub total of 18749');
+		$this->assertEquals(18749, $this->cart->subTotal(), 'Cart should have sub total of 18749');
 
 		// if we remove an item, the sub total should be updated as well
 		$this->cart->remove(456);
 
-		$this->assertEquals(11950, $this->cart->getSubTotal(), 'Cart should have sub total of 1195');
+		$this->assertEquals(11950, $this->cart->subTotal(), 'Cart should have sub total of 1195');
 	}
 
 	public function test_sub_total_when_item_quantity_is_updated() {
@@ -323,12 +323,12 @@ class CartTest extends PHPUnit_Framework_TestCase {
 
 		$this->cart->add($items);
 
-		$this->assertEquals(27322, $this->cart->getSubTotal(), 'Cart should have sub total of 27322');
+		$this->assertEquals(27322, $this->cart->subTotal(), 'Cart should have sub total of 27322');
 
 		// when cart's item quantity is updated, the subtotal should be updated as well
 		$this->cart->update(456, array('quantity' => 2));
 
-		$this->assertEquals(40920, $this->cart->getSubTotal(), 'Cart should have sub total of 4092');
+		$this->assertEquals(40920, $this->cart->subTotal(), 'Cart should have sub total of 4092');
 	}
 
 	public function test_sub_total_when_item_quantity_is_updated_by_reduced() {
@@ -351,7 +351,7 @@ class CartTest extends PHPUnit_Framework_TestCase {
 
 		$this->cart->add($items);
 
-		$this->assertEquals(27322, $this->cart->getSubTotal(), 'Cart should have sub total of 27322');
+		$this->assertEquals(27322, $this->cart->subTotal(), 'Cart should have sub total of 27322');
 
 		// when cart's item quantity is updated, the subtotal should be updated as well
 		$this->cart->update(456, array('quantity' => -1));
@@ -360,7 +360,7 @@ class CartTest extends PHPUnit_Framework_TestCase {
 		$item = $this->cart->get(456);
 
 		$this->assertEquals(2, $item['quantity'], 'Item quantity of with item ID of 456 should now be reduced to 2');
-		$this->assertEquals(20523, $this->cart->getSubTotal(), 'Cart should have sub total of 20523');
+		$this->assertEquals(20523, $this->cart->subTotal(), 'Cart should have sub total of 20523');
 	}
 
 	public function test_item_quantity_update_by_reduced_should_not_reduce_if_quantity_will_result_to_zero() {
@@ -465,7 +465,7 @@ class CartTest extends PHPUnit_Framework_TestCase {
 		$this->assertFalse($this->cart->isEmpty(), 'prove first cart is not empty');
 
 		// now let's count the cart's quantity
-		$this->assertInternalType("int", $this->cart->getTotalQuantity(), 'Return type should be INT');
-		$this->assertEquals(4, $this->cart->getTotalQuantity(), 'Cart\'s quantity should be 4.');
+		$this->assertInternalType("int", $this->cart->totalQuantity(), 'Return type should be INT');
+		$this->assertEquals(4, $this->cart->totalQuantity(), 'Cart\'s quantity should be 4.');
 	}
 }

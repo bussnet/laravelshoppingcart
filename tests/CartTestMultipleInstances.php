@@ -75,7 +75,7 @@ class CartTestMultipleInstances extends PHPUnit_Framework_TestCase {
 		$this->cart1->add($itemsForCart1);
 
 		$this->assertFalse($this->cart1->isEmpty(), 'Cart should not be empty');
-		$this->assertCount(3, $this->cart1->getContent()->toArray(), 'Cart should have 3 items');
+		$this->assertCount(3, $this->cart1->items()->toArray(), 'Cart should have 3 items');
 		$this->assertEquals('shopping', $this->cart1->getInstanceName(), 'Cart 1 should have instance name of "shopping"');
 
 		// add 1 item on cart 2
@@ -92,7 +92,7 @@ class CartTestMultipleInstances extends PHPUnit_Framework_TestCase {
 		$this->cart2->add($itemsForCart2);
 
 		$this->assertFalse($this->cart2->isEmpty(), 'Cart should not be empty');
-		$this->assertCount(1, $this->cart2->getContent()->toArray(), 'Cart should have 3 items');
+		$this->assertCount(1, $this->cart2->items()->toArray(), 'Cart should have 3 items');
 		$this->assertEquals('wishlist', $this->cart2->getInstanceName(), 'Cart 2 should have instance name of "wishlist"');
 	}
 }

@@ -77,17 +77,4 @@ class Helpers {
 
 		}
 	}
-
-	/**
-	 * check if variable is set and has value, return a default value
-	 *
-	 * @param $var
-	 * @param bool|mixed $default
-	 * @return bool|mixed
-	 */
-	public static function issetAndHasValueOrAssignDefault(&$var, $default = false) {
-		if ((isset($var)) && ($var != '')) return $var;
-
-		return $default;
-	}
 }

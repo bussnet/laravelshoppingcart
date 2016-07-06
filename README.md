@@ -166,7 +166,7 @@ Removing an item on a cart is very easy:
 Cart::remove(456);
 ```
 
-Getting an item on a cart: **Cart::get()**
+Getting an item on a cart: **Cart::item()**
 
 ```php
 
@@ -180,13 +180,13 @@ Getting an item on a cart: **Cart::get()**
 
 $itemId = 456;
 
-Cart::get($itemId);
+Cart::item($itemId);
 
 // You can also get the sum of the Item multiplied by its quantity, see below:
-$summedPrice = Cart::get($itemId)->getPriceSum();
+$summedPrice = Cart::item($itemId)->priceSum();
 ```
 
-Getting cart's contents and count: **Cart::getContent()**
+Getting cart's contents and count: **Cart::items()**
 
 ```php
 
@@ -196,7 +196,7 @@ Getting cart's contents and count: **Cart::getContent()**
  * @return CartCollection
  */
 
-$cartCollection = Cart::getContent();
+$cartCollection = Cart::items();
 
 // NOTE: Because cart collection extends Laravel's Collection
 // You can use methods you already know about Laravel's Collection
@@ -221,7 +221,7 @@ Check if cart is empty: **Cart::isEmpty()**
 Cart::isEmpty();
 ```
 
-Get cart total quantity: **Cart::getTotalQuantity()**
+Get cart total quantity: **Cart::totalQuantity()**
 
 ```php
 /**
@@ -229,10 +229,10 @@ Get cart total quantity: **Cart::getTotalQuantity()**
 *
 * @return int
 */
-$cartTotalQuantity = Cart::getTotalQuantity();
+$cartTotalQuantity = Cart::totalQuantity();
 ```
 
-Get cart subtotal: **Cart::getSubTotal()**
+Get cart subtotal: **Cart::subTotal()**
 
 ```php
 /**
@@ -240,10 +240,10 @@ Get cart subtotal: **Cart::getSubTotal()**
 *
 * @return float
 */
-$subTotal = Cart::getSubTotal();
+$subTotal = Cart::subTotal();
 ```
 
-Get cart total: **Cart::getTotal()**
+Get cart total: **Cart::total()**
 
 ```php
 /**
@@ -251,7 +251,7 @@ Get cart total: **Cart::getTotal()**
  *
  * @return float
  */
-$total = Cart::getTotal();
+$total = Cart::total();
 ```
 
 Clearing the Cart: **Cart::clear()**
@@ -343,16 +343,16 @@ $condition->getValue(); // the value of the condition
 $condition->getAttributes(); // the attributes of the condition, returns an empty [] if no attributes added
 
 // You can get the conditions calculated value by providing the subtotal, see below:
-$subTotal = Cart::getSubTotal();
+$subTotal = Cart::subTotal();
 $condition = Cart::getCondition('VAT 12.5%');
 $conditionCalculatedValue = $condition->getCalculatedValue($subTotal);
 ```
 
-NOTE: All cart based conditions should be applied before calling **Cart::getTotal()**
+NOTE: All cart based conditions should be applied before calling **Cart::total()**
 
-Then Finally you can call **Cart::getTotal()** to get the Cart Total with the applied conditions.
+Then Finally you can call **Cart::total()** to get the Cart Total with the applied conditions.
 ```php
-$cartTotal = Cart::getTotal(); // the total will be calculated based on the conditions you ave provided
+$cartTotal = Cart::total(); // the total will be calculated based on the conditions you ave provided
 ```
 
 Next is the Condition on Per-Item Bases.
@@ -418,11 +418,11 @@ $item = array(
 Cart::add($item);
 ```
 
-NOTE: All cart per-item conditions should be applied before calling **Cart::getSubTotal()**
+NOTE: All cart per-item conditions should be applied before calling **Cart::subTotal()**
 
-Then Finally you can call **Cart::getSubTotal()** to get the Cart sub total with the applied conditions.
+Then Finally you can call **Cart::subTotal()** to get the Cart sub total with the applied conditions.
 ```php
-$cartSubTotal = Cart::getSubTotal(); // the subtotal will be calculated based on the conditions you have provided
+$cartSubTotal = Cart::subTotal(); // the subtotal will be calculated based on the conditions you have provided
 ```
 
 Add condition to exisiting Item on the cart: **Cart::addItemCondition($productId, $itemCondition)**
@@ -523,7 +523,7 @@ public function removeConditionsByType($type)
 
 ## Items
 
-The method **Cart::getContent()** returns a collection of items. 
+The method **Cart::items()** returns a collection of items. 
 
 To get the id of an item, use the property **$item->id**.
 
@@ -535,40 +535,40 @@ To get the attributes of an item, use the property **$item->attributes**.
 
 To get the price of a single item without the conditions applied, use the property **$item->price**.
 
-To get the subtotal of an item without the conditions applied, use the method **$item->getPriceSum()**. 
+To get the subtotal of an item without the conditions applied, use the method **$item->priceSum()**. 
 ```php
 /**
 * get the sum of price
 *
 * @return mixed|null
 */
-public function getPriceSum()
+public function priceSum()
 
 ```
 
 To get the price of a single item without the conditions applied, use the method 
 
-**$item->getPriceWithConditions()**.
+**$item->priceWithConditions()**.
 ```php
 /**
 * get the single price in which conditions are already applied
 *
 * @return mixed|null
 */
-public function getPriceWithConditions() 
+public function priceWithConditions() 
 
 ```
 
 To get the subtotal of an item with the conditions applied, use the method 
 
-**$item->getPriceSumWithConditions()**
+**$item->priceSumWithConditions()**
 ```php
 /**
 * get the sum of price in which conditions are already applied
 *
 * @return mixed|null
 */
-public function getPriceSumWithConditions()
+public function priceSumWithConditions()
 
 ```
 
@@ -659,16 +659,16 @@ Cart::add(array(
 ));
 
 // then you can:
-$items = Cart::getContent();
+$items = Cart::items();
 
 foreach($items as $item)
 {
     $item->id; // the Id of the item
     $item->name; // the name
     $item->price; // the single price without conditions applied
-    $item->getPriceSum(); // the subtotal without conditions applied
-    $item->getPriceWithConditions(); // the single price with conditions applied
-    $item->getPriceSumWithConditions(); // the subtotal with conditions applied
+    $item->priceSum(); // the subtotal without conditions applied
+    $item->priceWithConditions(); // the single price with conditions applied
+    $item->priceSumWithConditions(); // the subtotal with conditions applied
     $item->quantity; // the quantity
     $item->attributes; // the attributes
 
@@ -691,9 +691,9 @@ $items->each(function($item)
     $item->id; // the Id of the item
     $item->name; // the name
     $item->price; // the single price without conditions applied
-    $item->getPriceSum(); // the subtotal without conditions applied
-    $item->getPriceWithConditions(); // the single price with conditions applied
-    $item->getPriceSumWithConditions(); // the subtotal with conditions applied
+    $item->priceSum(); // the subtotal without conditions applied
+    $item->priceWithConditions(); // the single price with conditions applied
+    $item->priceSumWithConditions(); // the subtotal with conditions applied
     $item->quantity; // the quantity
     $item->attributes; // the attributes
 
@@ -716,7 +716,7 @@ $items->each(function($item)
 
 **2.3.0
 - added new Cart Method: Cart::addItemCondition($productId, $itemCondition)
-- added new Cart Method: Cart::getTotalQuantity()
+- added new Cart Method: Cart::totalQuantity()
 
 **2.2.1
 - bug fixes
@@ -730,7 +730,7 @@ $items->each(function($item)
 
 **2.1.0
 - added new Cart Method: getCalculatedValue($totalOrSubTotalOrPrice)
-- added new Item Method: getPriceSum()
+- added new Item Method: priceSum()
 
 **2.0.0 (breaking change)
 - major changes in dealing with conditions (Please see [Conditions](#conditions) section, and read carefully)

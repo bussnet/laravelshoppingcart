@@ -21,7 +21,7 @@ class CartServiceProvider extends ServiceProvider {
 			$storage = $app['session'];
 			$events = $app['events'];
 			$instanceName = 'cart';
-			$session_key = '4yTlTDKu3oJOfzD';
+			$session_key = '__cart';
 
 			return new Cart(
 				$storage,

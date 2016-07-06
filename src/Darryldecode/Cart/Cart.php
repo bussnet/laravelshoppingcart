@@ -46,6 +46,13 @@ class Cart {
 	 */
 	protected $sessionKeyCartConditions;
 
+	protected $item_rules = array(
+		'id' => 'required',
+		'price' => 'required|numeric',
+		'quantity' => 'required|numeric|min:1',
+		'name' => 'required',
+	);
+
 	/**
 	 * our object constructor
 	 *
@@ -53,14 +60,17 @@ class Cart {
 	 * @param $events
 	 * @param $instanceName
 	 * @param $session_key
+	 * @param array $custom_item_rules overwrite existing item_rules
 	 */
-	public function __construct($session, $events, $instanceName, $session_key) {
+	public function __construct($session, $events, $instanceName, $session_key, $custom_item_rules=[]) {
 		$this->events = $events;
 		$this->session = $session;
 		$this->instanceName = $instanceName;
 		$this->sessionKeyCartItems = $session_key . '_cart_items';
 		$this->sessionKeyCartConditions = $session_key . '_cart_conditions';
 		$this->events->fire($this->getInstanceName() . '.created', array($this));
+		if (!empty($custom_item_rules))
+			$this->item_rules = $custom_item_rules;
 	}
 
 	/**
@@ -79,7 +89,7 @@ class Cart {
 	 * @return mixed
 	 */
 	public function get($itemId) {
-		return $this->getContent()->get($itemId);
+		return $this->items()->get($itemId);
 	}
 
 	/**
@@ -89,7 +99,7 @@ class Cart {
 	 * @return bool
 	 */
 	public function has($itemId) {
-		return $this->getContent()->has($itemId);
+		return $this->items()->has($itemId);
 	}
 
 	/**
@@ -104,7 +114,7 @@ class Cart {
 	 * @return $this
 	 * @throws InvalidItemException
 	 */
-	public function add($id, $name = null, $price = null, $quantity = null, $attributes = array(), $conditions = array()) {
+	public function add($id, $name = null, $price = null, $quantity = 1, $attributes = array(), $conditions = array()) {
 		// if the first argument is an array,
 		// we will need to call add again
 		if (is_array($id)) {
@@ -117,8 +127,8 @@ class Cart {
 						$item['name'],
 						$item['price'],
 						$item['quantity'],
-						Helpers::issetAndHasValueOrAssignDefault($item['attributes'], array()),
-						Helpers::issetAndHasValueOrAssignDefault($item['conditions'], array())
+						@$item['attributes'] ?: array(),
+						@$item['conditions'] ?: array()
 					);
 				}
 			} else {
@@ -127,8 +137,8 @@ class Cart {
 					$id['name'],
 					$id['price'],
 					$id['quantity'],
-					Helpers::issetAndHasValueOrAssignDefault($id['attributes'], array()),
-					Helpers::issetAndHasValueOrAssignDefault($id['conditions'], array())
+					@$id['attributes'] ?: array(),
+					@$id['conditions'] ?: array()
 				);
 			}
 
@@ -146,7 +156,7 @@ class Cart {
 		));
 
 		// get the cart
-		$cart = $this->getContent();
+		$cart = $this->items();
 
 		// if the item is already in the cart we will just update it
 		if ($cart->has($id)) {
@@ -173,7 +183,7 @@ class Cart {
 	public function update($id, $data) {
 		$this->events->fire($this->getInstanceName() . '.updating', array($data, $this));
 
-		$cart = $this->getContent();
+		$cart = $this->items();
 
 		$item = $cart->pull($id);
 
@@ -251,7 +261,7 @@ class Cart {
 	 * @param $id
 	 */
 	public function remove($id) {
-		$cart = $this->getContent();
+		$cart = $this->items();
 
 		$this->events->fire($this->getInstanceName() . '.removing', array($id, $this));
 
@@ -377,7 +387,7 @@ class Cart {
 	 * @return bool
 	 */
 	public function removeItemCondition($itemId, $conditionName) {
-		if (!$item = $this->getContent()->get($itemId)) {
+		if (!$item = $this->items()->get($itemId)) {
 			return false;
 		}
 
@@ -433,7 +443,7 @@ class Cart {
 	 * @return bool
 	 */
 	public function clearItemConditions($itemId) {
-		if (!$item = $this->getContent()->get($itemId)) {
+		if (!$item = $this->items()->get($itemId)) {
 			return false;
 		}
 
@@ -463,11 +473,11 @@ class Cart {
 	 *
 	 * @return int
 	 */
-	public function getSubTotal() {
-		$cart = $this->getContent();
+	public function subTotal() {
+		$cart = $this->items();
 
 		$sum = $cart->sum(function ($item) {
-			return $item->getPriceSumWithConditions();
+			return $item->priceSumWithConditions();
 		});
 
 		return Helpers::intval($sum);
@@ -478,8 +488,8 @@ class Cart {
 	 *
 	 * @return int
 	 */
-	public function getTotal() {
-		$subTotal = $this->getSubTotal();
+	public function total() {
+		$subTotal = $this->subTotal();
 
 		$newTotal = 0;
 
@@ -508,8 +518,8 @@ class Cart {
 	 *
 	 * @return int
 	 */
-	public function getTotalQuantity() {
-		$items = $this->getContent();
+	public function totalQuantity() {
+		$items = $this->items();
 
 		if ($items->isEmpty()) return 0;
 
@@ -525,7 +535,7 @@ class Cart {
 	 *
 	 * @return CartCollection
 	 */
-	public function getContent() {
+	public function items() {
 		return (new CartCollection($this->session->get($this->sessionKeyCartItems)));
 	}
 
@@ -548,14 +558,7 @@ class Cart {
 	 * @throws InvalidItemException
 	 */
 	protected function validate($item) {
-		$rules = array(
-			'id' => 'required',
-			'price' => 'required|numeric',
-			'quantity' => 'required|numeric|min:1',
-			'name' => 'required',
-		);
-
-		$validator = CartItemValidator::make($item, $rules);
+		$validator = CartItemValidator::make($item, $this->item_rules);
 
 		if ($validator->fails()) {
 			throw new InvalidItemException($validator->messages()->first());
@@ -573,7 +576,7 @@ class Cart {
 	protected function addRow($id, $item) {
 		$this->events->fire($this->getInstanceName() . '.adding', array($item, $this));
 
-		$cart = $this->getContent();
+		$cart = $this->items();
 
 		$cart->put($id, new ItemCollection($item));
 

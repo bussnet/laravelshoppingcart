@@ -39,7 +39,7 @@ class ItemTest extends PHPUnit_Framework_TestCase {
 
 		$item = $this->cart->get(455);
 
-		$this->assertEquals(20198, $item->getPriceSum(), 'Item summed price should be 20198');
+		$this->assertEquals(20198, $item->priceSum(), 'Item summed price should be 20198');
 	}
 
 	public function test_item_get_sum_price_using_array_style() {
@@ -47,6 +47,6 @@ class ItemTest extends PHPUnit_Framework_TestCase {
 
 		$item = $this->cart->get(455);
 
-		$this->assertEquals(20198, $item->getPriceSum(), 'Item summed price should be 20198');
+		$this->assertEquals(20198, $item->priceSum(), 'Item summed price should be 20198');
 	}
 }

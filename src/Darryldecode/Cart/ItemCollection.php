@@ -12,11 +12,20 @@ use Illuminate\Support\Collection;
 class ItemCollection extends Collection {
 
 	/**
+	 * get the price
+	 *
+	 * @return mixed|null
+	 */
+	public function price() {
+		return $this->price;
+	}
+
+	/**
 	 * get the sum of price
 	 *
 	 * @return mixed|null
 	 */
-	public function getPriceSum() {
+	public function priceSum() {
 		return $this->price * $this->quantity;
 	}
 
@@ -46,7 +55,7 @@ class ItemCollection extends Collection {
 	 *
 	 * @return mixed|null
 	 */
-	public function getPriceWithConditions() {
+	public function priceWithConditions() {
 		$originalPrice = $this->price;
 		$newPrice = 0;
 		$processed = 0;
@@ -76,7 +85,7 @@ class ItemCollection extends Collection {
 	 *
 	 * @return mixed|null
 	 */
-	public function getPriceSumWithConditions() {
-		return $this->getPriceWithConditions() * $this->quantity;
+	public function priceSumWithConditions() {
+		return $this->priceWithConditions() * $this->quantity;
 	}
 }
