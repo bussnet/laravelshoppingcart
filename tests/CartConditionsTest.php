@@ -41,20 +41,20 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
     {
         $this->fillCart();
 
-        $this->assertEquals(187.49, $this->cart->getSubTotal(), 'Cart should have sub total of 187.49');
+        $this->assertEquals(18749, $this->cart->getSubTotal(), 'Cart should have sub total of 18749');
 
         // no changes in subtotal as the condition's target added was for total
-        $this->assertEquals(187.49, $this->cart->getSubTotal(), 'Cart should have sub total of 187.49');
+        $this->assertEquals(18749, $this->cart->getSubTotal(), 'Cart should have sub total of 18749');
 
         // total should be the same as subtotal
-        $this->assertEquals(187.49, $this->cart->getTotal(), 'Cart should have a total of 187.49');
+        $this->assertEquals(18749, $this->cart->getTotal(), 'Cart should have a total of 18749');
     }
 
     public function test_total_with_condition()
     {
         $this->fillCart();
 
-        $this->assertEquals(187.49, $this->cart->getSubTotal(), 'Cart should have sub total of 187.49');
+        $this->assertEquals(18749, $this->cart->getSubTotal(), 'Cart should have sub total of 18749');
 
         // add condition
         $condition = new CartCondition(array(
@@ -67,17 +67,17 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
         $this->cart->condition($condition);
 
         // no changes in subtotal as the condition's target added was for total
-        $this->assertEquals(187.49, $this->cart->getSubTotal(), 'Cart should have sub total of 187.49');
+        $this->assertEquals(18749, $this->cart->getSubTotal(), 'Cart should have sub total of 18749');
 
         // total should be changed
-        $this->assertEquals(210.92625, $this->cart->getTotal(), 'Cart should have a total of 210.92625');
+        $this->assertEquals(21093, $this->cart->getTotal(), 'Cart should have a total of 21093');
     }
 
     public function test_total_with_multiple_conditions_added_scenario_one()
     {
         $this->fillCart();
 
-        $this->assertEquals(187.49, $this->cart->getSubTotal(), 'Cart should have sub total of 187.49');
+        $this->assertEquals(18749, $this->cart->getSubTotal(), 'Cart should have sub total of 18749');
 
         // add condition
         $condition1 = new CartCondition(array(
@@ -90,24 +90,24 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
             'name' => 'Express Shipping $15',
             'type' => 'shipping',
             'target' => 'subtotal',
-            'value' => '+15',
+            'value' => '+1500',
         ));
 
         $this->cart->condition($condition1);
         $this->cart->condition($condition2);
 
         // no changes in subtotal as the condition's target added was for subtotal
-        $this->assertEquals(187.49, $this->cart->getSubTotal(), 'Cart should have sub total of 187.49');
+        $this->assertEquals(18749, $this->cart->getSubTotal(), 'Cart should have sub total of 18749');
 
         // total should be changed
-        $this->assertEquals(225.92625, $this->cart->getTotal(), 'Cart should have a total of 225.92625');
+        $this->assertEquals(22593, $this->cart->getTotal(), 'Cart should have a total of 22593');
     }
 
     public function test_total_with_multiple_conditions_added_scenario_two()
     {
         $this->fillCart();
 
-        $this->assertEquals(187.49, $this->cart->getSubTotal(), 'Cart should have sub total of 187.49');
+        $this->assertEquals(18749, $this->cart->getSubTotal(), 'Cart should have sub total of 18749');
 
         // add condition
         $condition1 = new CartCondition(array(
@@ -120,24 +120,24 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
             'name' => 'Express Shipping $15',
             'type' => 'shipping',
             'target' => 'subtotal',
-            'value' => '-15',
+            'value' => '-1500',
         ));
 
         $this->cart->condition($condition1);
         $this->cart->condition($condition2);
 
         // no changes in subtotal as the condition's target added was for subtotal
-        $this->assertEquals(187.49, $this->cart->getSubTotal(), 'Cart should have sub total of 187.49');
+        $this->assertEquals(18749, $this->cart->getSubTotal(), 'Cart should have sub total of 18749');
 
         // total should be changed
-        $this->assertEquals(195.92625, $this->cart->getTotal(), 'Cart should have a total of 195.92625');
+        $this->assertEquals(19593, $this->cart->getTotal(), 'Cart should have a total of 19593');
     }
 
     public function test_total_with_multiple_conditions_added_scenario_three()
     {
         $this->fillCart();
 
-        $this->assertEquals(187.49, $this->cart->getSubTotal(), 'Cart should have sub total of 187.49');
+        $this->assertEquals(18749, $this->cart->getSubTotal(), 'Cart should have sub total of 18749');
 
         // add condition
         $condition1 = new CartCondition(array(
@@ -150,24 +150,24 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
             'name' => 'Express Shipping $15',
             'type' => 'shipping',
             'target' => 'subtotal',
-            'value' => '-15',
+            'value' => '-1500',
         ));
 
         $this->cart->condition($condition1);
         $this->cart->condition($condition2);
 
         // no changes in subtotal as the condition's target added was for total
-        $this->assertEquals(187.49, $this->cart->getSubTotal(), 'Cart should have sub total of 187.49');
+        $this->assertEquals(18749, $this->cart->getSubTotal(), 'Cart should have sub total of 18749');
 
         // total should be changed
-        $this->assertEquals(149.05375, $this->cart->getTotal(), 'Cart should have a total of 149.05375');
+        $this->assertEquals(14905, $this->cart->getTotal(), 'Cart should have a total of 14905');
     }
 
     public function test_cart_multiple_conditions_can_be_added_once_by_array()
     {
         $this->fillCart();
 
-        $this->assertEquals(187.49, $this->cart->getSubTotal(), 'Cart should have sub total of 187.49');
+        $this->assertEquals(18749, $this->cart->getSubTotal(), 'Cart should have sub total of 18749');
 
         // add condition
         $condition1 = new CartCondition(array(
@@ -180,23 +180,23 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
             'name' => 'Express Shipping $15',
             'type' => 'shipping',
             'target' => 'subtotal',
-            'value' => '-15',
+            'value' => '-1500',
         ));
 
         $this->cart->condition([$condition1,$condition2]);
 
         // no changes in subtotal as the condition's target added was for total
-        $this->assertEquals(187.49, $this->cart->getSubTotal(), 'Cart should have sub total of 187.49');
+        $this->assertEquals(18749, $this->cart->getSubTotal(), 'Cart should have sub total of 18749');
 
         // total should be changed
-        $this->assertEquals(149.05375, $this->cart->getTotal(), 'Cart should have a total of 149.05375');
+        $this->assertEquals(14905, $this->cart->getTotal(), 'Cart should have a total of 14905');
     }
 
     public function test_total_with_multiple_conditions_added_scenario_four()
     {
         $this->fillCart();
 
-        $this->assertEquals(187.49, $this->cart->getSubTotal(), 'Cart should have sub total of 187.49');
+        $this->assertEquals(18749, $this->cart->getSubTotal(), 'Cart should have sub total of 18749');
 
         // add condition
         $condition1 = new CartCondition(array(
@@ -209,17 +209,17 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
             'name' => 'Express Shipping $15',
             'type' => 'shipping',
             'target' => 'subtotal',
-            'value' => '+15',
+            'value' => '+1500',
         ));
 
         $this->cart->condition($condition1);
         $this->cart->condition($condition2);
 
         // no changes in subtotal as the condition's target added was for total
-        $this->assertEquals(187.49, $this->cart->getSubTotal(), 'Cart should have sub total of 187.49');
+        $this->assertEquals(18749, $this->cart->getSubTotal(), 'Cart should have sub total of 18749');
 
         // total should be changed
-        $this->assertEquals(179.05375, $this->cart->getTotal(), 'Cart should have a total of 179.05375');
+        $this->assertEquals(17905, $this->cart->getTotal(), 'Cart should have a total of 17905');
     }
 
     public function test_add_item_with_condition()
@@ -255,22 +255,22 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
             'value' => '-5%',
         ));
         $itemCondition2 = new CartCondition(array(
-            'name' => 'Item Gift Pack 25.00',
+            'name' => 'Item Gift Pack 2500',
             'type' => 'promo',
             'target' => 'item',
-            'value' => '-25',
+            'value' => '-2500',
         ));
         $itemCondition3 = new CartCondition(array(
             'name' => 'MISC',
             'type' => 'misc',
             'target' => 'item',
-            'value' => '+10',
+            'value' => '+1000',
         ));
 
         $item = array(
             'id' => 456,
             'name' => 'Sample Item 1',
-            'price' => 100,
+            'price' => 10000,
             'quantity' => 1,
             'attributes' => array(),
             'conditions' => [$itemCondition1, $itemCondition2, $itemCondition3]
@@ -278,8 +278,8 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
 
         $this->cart->add($item);
 
-        $this->assertEquals(80.00, $this->cart->get(456)->getPriceSumWithConditions(), 'Item subtotal with 1 item should be 80');
-        $this->assertEquals(80.00, $this->cart->getSubTotal(), 'Cart subtotal with 1 item should be 80');
+        $this->assertEquals(8000, $this->cart->get(456)->getPriceSumWithConditions(), 'Item subtotal with 1 item should be 80');
+        $this->assertEquals(8000, $this->cart->getSubTotal(), 'Cart subtotal with 1 item should be 80');
     }
 
     public function test_add_item_with_multiple_item_conditions_with_one_condition_wrong_target()
@@ -297,16 +297,16 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
             'value' => '-5%',
         )); // --> this should not be included in calculation
         $itemCondition2 = new CartCondition(array(
-            'name' => 'Item Gift Pack 25.00',
+            'name' => 'Item Gift Pack 2500',
             'type' => 'promo',
             'target' => 'item',
-            'value' => '-25',
+            'value' => '-2500',
         ));
         $itemCondition3 = new CartCondition(array(
             'name' => 'MISC',
             'type' => 'misc',
             'target' => 'item',
-            'value' => '+10',
+            'value' => '+1000',
         ));
         $itemCondition4 = new CartCondition(array(
             'name' => 'MISC 2',
@@ -318,7 +318,7 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
         $item = array(
             'id' => 456,
             'name' => 'Sample Item 1',
-            'price' => 100,
+            'price' => 10000,
             'quantity' => 1,
             'attributes' => array(),
             'conditions' => [$itemCondition1, $itemCondition2, $itemCondition3, $itemCondition4]
@@ -326,17 +326,17 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
 
         $this->cart->add($item);
 
-        $this->assertEquals(85.00, $this->cart->get(456)->getPriceSumWithConditions(), 'Cart subtotal with 1 item should be 85');
-        $this->assertEquals(85.00, $this->cart->getSubTotal(), 'Cart subtotal with 1 item should be 85');
+        $this->assertEquals(8500, $this->cart->get(456)->getPriceSumWithConditions(), 'Cart subtotal with 1 item should be 85');
+        $this->assertEquals(8500, $this->cart->getSubTotal(), 'Cart subtotal with 1 item should be 85');
     }
 
     public function test_add_item_condition()
     {
         $itemCondition2 = new CartCondition(array(
-            'name' => 'Item Gift Pack 25.00',
+            'name' => 'Item Gift Pack 2500',
             'type' => 'promo',
             'target' => 'item',
-            'value' => '-25',
+            'value' => '-2500',
         ));
         $coupon101 = new CartCondition(array(
             'name' => 'COUPON 101',
@@ -348,7 +348,7 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
         $item = array(
             'id' => 456,
             'name' => 'Sample Item 1',
-            'price' => 100,
+            'price' => 10000,
             'quantity' => 1,
             'attributes' => array(),
             'conditions' => [$itemCondition2]
@@ -371,7 +371,7 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
             'name' => 'Substract amount but prevent negative value',
             'type' => 'promo',
             'target' => 'item',
-            'value' => '-25',
+            'value' => '-2500',
         ]);
 
         $item = [
@@ -389,7 +389,7 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
 
         // Since the product price is 20 and the condition reduces it by 25,
         // check that the item's price has been prevented from dropping below zero.
-        $this->assertEquals(0.00, $this->cart->get($item['id'])->getPriceSumWithConditions(), "The item's price should be prevented from going below zero.");
+        $this->assertEquals(0, $this->cart->get($item['id'])->getPriceSumWithConditions(), "The item's price should be prevented from going below zero.");
     }
 
     public function test_get_cart_condition_by_condition_name()
@@ -401,16 +401,16 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
             'value' => '-5%',
         ));
         $itemCondition2 = new CartCondition(array(
-            'name' => 'Item Gift Pack 25.00',
+            'name' => 'Item Gift Pack 2500',
             'type' => 'promo',
             'target' => 'subtotal',
-            'value' => '-25',
+            'value' => '-2500',
         ));
 
         $item = array(
             'id' => 456,
             'name' => 'Sample Item 1',
-            'price' => 100,
+            'price' => 10000,
             'quantity' => 1,
             'attributes' => array(),
         );
@@ -437,16 +437,16 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
             'value' => '-5%',
         ));
         $itemCondition2 = new CartCondition(array(
-            'name' => 'Item Gift Pack 25.00',
+            'name' => 'Item Gift Pack 2500',
             'type' => 'promo',
             'target' => 'subtotal',
-            'value' => '-25',
+            'value' => '-2500',
         ));
 
         $item = array(
             'id' => 456,
             'name' => 'Sample Item 1',
-            'price' => 100,
+            'price' => 10000,
             'quantity' => 1,
             'attributes' => array(),
         );
@@ -463,7 +463,7 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
 
         // cart should have now only 1 condition
         $this->assertEquals(1, $this->cart->getConditions()->count(), 'Cart should have one condition');
-        $this->assertEquals('Item Gift Pack 25.00', $this->cart->getConditions()->first()->getName());
+        $this->assertEquals('Item Gift Pack 2500', $this->cart->getConditions()->first()->getName());
     }
 
     public function test_remove_item_condition_by_condition_name()
@@ -475,16 +475,16 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
             'value' => '-5%',
         ));
         $itemCondition2 = new CartCondition(array(
-            'name' => 'Item Gift Pack 25.00',
+            'name' => 'Item Gift Pack 2500',
             'type' => 'promo',
             'target' => 'item',
-            'value' => '-25',
+            'value' => '-2500',
         ));
 
         $item = array(
             'id' => 456,
             'name' => 'Sample Item 1',
-            'price' => 100,
+            'price' => 10000,
             'quantity' => 1,
             'attributes' => array(),
             'conditions' => [$itemCondition1, $itemCondition2]
@@ -516,7 +516,7 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
         $item = array(
             'id' => 456,
             'name' => 'Sample Item 1',
-            'price' => 100,
+            'price' => 10000,
             'quantity' => 1,
             'attributes' => array(),
             'conditions' => $itemCondition // <--not in array format
@@ -543,16 +543,16 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
             'value' => '-5%',
         ));
         $itemCondition2 = new CartCondition(array(
-            'name' => 'Item Gift Pack 25.00',
+            'name' => 'Item Gift Pack 2500',
             'type' => 'promo',
             'target' => 'item',
-            'value' => '-25',
+            'value' => '-2500',
         ));
 
         $item = array(
             'id' => 456,
             'name' => 'Sample Item 1',
-            'price' => 100,
+            'price' => 10000,
             'quantity' => 1,
             'attributes' => array(),
             'conditions' => [$itemCondition1, $itemCondition2]
@@ -583,16 +583,16 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
             'value' => '-5%',
         ));
         $itemCondition2 = new CartCondition(array(
-            'name' => 'Item Gift Pack 25.00',
+            'name' => 'Item Gift Pack 2500',
             'type' => 'promo',
             'target' => 'subtotal',
-            'value' => '-25',
+            'value' => '-2500',
         ));
 
         $item = array(
             'id' => 456,
             'name' => 'Sample Item 1',
-            'price' => 100,
+            'price' => 10000,
             'quantity' => 1,
             'attributes' => array(),
         );
@@ -620,7 +620,7 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
             'value' => '-5%',
         ));
         $cartCondition2 = new CartCondition(array(
-            'name' => 'Item Gift Pack 25.00',
+            'name' => 'Item Gift Pack 2500',
             'type' => 'promo',
             'target' => 'subtotal',
             'value' => '-25',
@@ -651,7 +651,7 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
         // get all cart conditions and get their calculated values
         $conditions = $this->cart->getConditions();
         $this->assertEquals(5, $conditions['SALE 5%']->getCalculatedValue($subTotal),'First condition calculated value must be 5');
-        $this->assertEquals(25, $conditions['Item Gift Pack 25.00']->getCalculatedValue($subTotal),'First condition calculated value must be 5');
+        $this->assertEquals(25, $conditions['Item Gift Pack 2500']->getCalculatedValue($subTotal),'First condition calculated value must be 5');
     }
 
     public function test_get_conditions_by_type()
@@ -663,10 +663,10 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
             'value' => '-5%',
         ));
         $cartCondition2 = new CartCondition(array(
-            'name' => 'Item Gift Pack 25.00',
+            'name' => 'Item Gift Pack 2500',
             'type' => 'promo',
             'target' => 'subtotal',
-            'value' => '-25',
+            'value' => '-2500',
         ));
         $cartCondition3 = new CartCondition(array(
             'name' => 'Item Less 8%',
@@ -678,7 +678,7 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
         $item = array(
             'id' => 456,
             'name' => 'Sample Item 1',
-            'price' => 100,
+            'price' => 10000,
             'quantity' => 1,
             'attributes' => array(),
         );
@@ -698,7 +698,7 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
         // NOTE:
         // when add a new condition, the condition's name will be the key to be use
         // to access the condition. For some reasons, if the condition name contains
-        // a "dot" on it ("."), for example adding a condition with name "SALE 35.00"
+        // a "dot" on it ("."), for example adding a condition with name "SALE 3500"
         // this will cause issues when removing this condition by name, this will not be removed
         // so when adding a condition, the condition name should not contain any "period" (.)
         // to avoid any issues removing it using remove method: removeCartCondition($conditionName);
@@ -713,7 +713,7 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
             'name' => 'Item Gift Pack 20',
             'type' => 'promo',
             'target' => 'subtotal',
-            'value' => '-25',
+            'value' => '-2500',
         ));
         $cartCondition3 = new CartCondition(array(
             'name' => 'Item Less 8%',
@@ -725,7 +725,7 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
         $item = array(
             'id' => 456,
             'name' => 'Sample Item 1',
-            'price' => 100,
+            'price' => 10000,
             'quantity' => 1,
             'attributes' => array(),
         );
@@ -752,7 +752,7 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
         $item = array(
             'id' => 456,
             'name' => 'Sample Item 1',
-            'price' => 100,
+            'price' => 10000,
             'quantity' => 1,
             'attributes' => array(),
         );
@@ -788,7 +788,7 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
         $item = array(
             'id' => 456,
             'name' => 'Sample Item 1',
-            'price' => 100,
+            'price' => 10000,
             'quantity' => 1,
             'attributes' => array(),
         );
@@ -819,21 +819,21 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
             array(
                 'id' => 456,
                 'name' => 'Sample Item 1',
-                'price' => 67.99,
+                'price' => 6799,
                 'quantity' => 1,
                 'attributes' => array()
             ),
             array(
                 'id' => 568,
                 'name' => 'Sample Item 2',
-                'price' => 69.25,
+                'price' => 6925,
                 'quantity' => 1,
                 'attributes' => array()
             ),
             array(
                 'id' => 856,
                 'name' => 'Sample Item 3',
-                'price' => 50.25,
+                'price' => 5025,
                 'quantity' => 1,
                 'attributes' => array()
             ),

@@ -53,7 +53,7 @@ class ItemCollection extends Collection {
     public function getPriceWithConditions() 
     {
         $originalPrice = $this->price;
-        $newPrice = 0.00;
+        $newPrice = 0;
         $processed = 0;
 
         if( $this->hasConditions() )

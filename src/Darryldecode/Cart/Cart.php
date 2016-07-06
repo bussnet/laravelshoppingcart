@@ -101,7 +101,7 @@ class Cart {
      *
      * @param string|array $id
      * @param string $name
-     * @param float $price
+     * @param int $price
      * @param int $quantity
      * @param array $attributes
      * @param CartCondition|array $conditions
@@ -518,7 +518,7 @@ class Cart {
     /**
      * get cart sub total
      *
-     * @return float
+     * @return int
      */
     public function getSubTotal()
     {
@@ -529,19 +529,19 @@ class Cart {
             return $item->getPriceSumWithConditions();
         });
 
-        return floatval($sum);
+        return Helpers::intval($sum);
     }
 
     /**
      * the new total in which conditions are already applied
      *
-     * @return float
+     * @return int
      */
     public function getTotal()
     {
         $subTotal = $this->getSubTotal();
 
-        $newTotal = 0.00;
+        $newTotal = 0;
 
         $process = 0;
 

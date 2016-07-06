@@ -55,21 +55,21 @@ class CartTestMultipleInstances extends PHPUnit_Framework_TestCase {
             array(
                 'id' => 456,
                 'name' => 'Sample Item 1',
-                'price' => 67.99,
+                'price' => 6799,
                 'quantity' => 4,
                 'attributes' => array()
             ),
             array(
                 'id' => 568,
                 'name' => 'Sample Item 2',
-                'price' => 69.25,
+                'price' => 6925,
                 'quantity' => 4,
                 'attributes' => array()
             ),
             array(
                 'id' => 856,
                 'name' => 'Sample Item 3',
-                'price' => 50.25,
+                'price' => 5025,
                 'quantity' => 4,
                 'attributes' => array()
             ),
@@ -86,7 +86,7 @@ class CartTestMultipleInstances extends PHPUnit_Framework_TestCase {
             array(
                 'id' => 456,
                 'name' => 'Sample Item 1',
-                'price' => 67.99,
+                'price' => 6799,
                 'quantity' => 4,
                 'attributes' => array()
             ),

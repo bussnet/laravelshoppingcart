@@ -39,19 +39,19 @@ class ItemTest extends PHPUnit_Framework_TestCase
 
     public function test_item_get_sum_price_using_property()
     {
-        $this->cart->add(455, 'Sample Item', 100.99, 2, array());
+        $this->cart->add(455, 'Sample Item', 10099, 2, array());
 
         $item = $this->cart->get(455);
 
-        $this->assertEquals(201.98, $item->getPriceSum(), 'Item summed price should be 201.98');
+        $this->assertEquals(20198, $item->getPriceSum(), 'Item summed price should be 20198');
     }
 
     public function test_item_get_sum_price_using_array_style()
     {
-        $this->cart->add(455, 'Sample Item', 100.99, 2, array());
+        $this->cart->add(455, 'Sample Item', 10099, 2, array());
 
         $item = $this->cart->get(455);
 
-        $this->assertEquals(201.98, $item->getPriceSum(), 'Item summed price should be 201.98');
+        $this->assertEquals(20198, $item->getPriceSum(), 'Item summed price should be 20198');
     }
 }

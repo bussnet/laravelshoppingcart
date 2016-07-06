@@ -51,7 +51,7 @@ class CartTestEvents extends PHPUnit_Framework_TestCase {
             'SAMPLESESSIONKEY'
         );
 
-        $cart->add(455, 'Sample Item', 100.99, 2, array());
+        $cart->add(455, 'Sample Item', 10099, 2, array());
     }
 
     public function test_event_cart_adding_multiple_times()
@@ -68,8 +68,8 @@ class CartTestEvents extends PHPUnit_Framework_TestCase {
             'SAMPLESESSIONKEY'
         );
 
-        $cart->add(455, 'Sample Item 1', 100.99, 2, array());
-        $cart->add(562, 'Sample Item 2', 100.99, 2, array());
+        $cart->add(455, 'Sample Item 1', 10099, 2, array());
+        $cart->add(562, 'Sample Item 2', 10099, 2, array());
     }
 
     public function test_event_cart_adding_multiple_times_scenario_two()
@@ -83,21 +83,21 @@ class CartTestEvents extends PHPUnit_Framework_TestCase {
             array(
                 'id' => 456,
                 'name' => 'Sample Item 1',
-                'price' => 67.99,
+                'price' => 6799,
                 'quantity' => 4,
                 'attributes' => array()
             ),
             array(
                 'id' => 568,
                 'name' => 'Sample Item 2',
-                'price' => 69.25,
+                'price' => 6925,
                 'quantity' => 4,
                 'attributes' => array()
             ),
             array(
                 'id' => 856,
                 'name' => 'Sample Item 3',
-                'price' => 50.25,
+                'price' => 5025,
                 'quantity' => 4,
                 'attributes' => array()
             ),
@@ -126,21 +126,21 @@ class CartTestEvents extends PHPUnit_Framework_TestCase {
             array(
                 'id' => 456,
                 'name' => 'Sample Item 1',
-                'price' => 67.99,
+                'price' => 6799,
                 'quantity' => 4,
                 'attributes' => array()
             ),
             array(
                 'id' => 568,
                 'name' => 'Sample Item 2',
-                'price' => 69.25,
+                'price' => 6925,
                 'quantity' => 4,
                 'attributes' => array()
             ),
             array(
                 'id' => 856,
                 'name' => 'Sample Item 3',
-                'price' => 50.25,
+                'price' => 5025,
                 'quantity' => 4,
                 'attributes' => array()
             ),
@@ -171,21 +171,21 @@ class CartTestEvents extends PHPUnit_Framework_TestCase {
             array(
                 'id' => 456,
                 'name' => 'Sample Item 1',
-                'price' => 67.99,
+                'price' => 6799,
                 'quantity' => 4,
                 'attributes' => array()
             ),
             array(
                 'id' => 568,
                 'name' => 'Sample Item 2',
-                'price' => 69.25,
+                'price' => 6925,
                 'quantity' => 4,
                 'attributes' => array()
             ),
             array(
                 'id' => 856,
                 'name' => 'Sample Item 3',
-                'price' => 50.25,
+                'price' => 5025,
                 'quantity' => 4,
                 'attributes' => array()
             ),
