@@ -9,49 +9,44 @@
 use Darryldecode\Cart\Cart;
 use Mockery as m;
 
-require_once __DIR__.'/helpers/SessionMock.php';
+require_once __DIR__ . '/helpers/SessionMock.php';
 
-class ItemTest extends PHPUnit_Framework_TestCase
-{
+class ItemTest extends PHPUnit_Framework_TestCase {
 
-    /**
-     * @var Darryldecode\Cart\Cart
-     */
-    protected $cart;
+	/**
+	 * @var Darryldecode\Cart\Cart
+	 */
+	protected $cart;
 
-    public function setUp()
-    {
-        $events = m::mock('Illuminate\Contracts\Events\Dispatcher');
-        $events->shouldReceive('fire');
+	public function setUp() {
+		$events = m::mock('Illuminate\Contracts\Events\Dispatcher');
+		$events->shouldReceive('fire');
 
-        $this->cart = new Cart(
-            new SessionMock(),
-            $events,
-            'shopping',
-            'SAMPLESESSIONKEY'
-        );
-    }
+		$this->cart = new Cart(
+			new SessionMock(),
+			$events,
+			'shopping',
+			'SAMPLESESSIONKEY'
+		);
+	}
 
-    public function tearDown()
-    {
-        m::close();
-    }
+	public function tearDown() {
+		m::close();
+	}
 
-    public function test_item_get_sum_price_using_property()
-    {
-        $this->cart->add(455, 'Sample Item', 10099, 2, array());
+	public function test_item_get_sum_price_using_property() {
+		$this->cart->add(455, 'Sample Item', 10099, 2, array());
 
-        $item = $this->cart->get(455);
+		$item = $this->cart->get(455);
 
-        $this->assertEquals(20198, $item->getPriceSum(), 'Item summed price should be 20198');
-    }
+		$this->assertEquals(20198, $item->getPriceSum(), 'Item summed price should be 20198');
+	}
 
-    public function test_item_get_sum_price_using_array_style()
-    {
-        $this->cart->add(455, 'Sample Item', 10099, 2, array());
+	public function test_item_get_sum_price_using_array_style() {
+		$this->cart->add(455, 'Sample Item', 10099, 2, array());
 
-        $item = $this->cart->get(455);
+		$item = $this->cart->get(455);
 
-        $this->assertEquals(20198, $item->getPriceSum(), 'Item summed price should be 20198');
-    }
+		$this->assertEquals(20198, $item->getPriceSum(), 'Item summed price should be 20198');
+	}
 }
