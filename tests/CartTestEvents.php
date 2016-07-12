@@ -6,7 +6,7 @@
  * Time: 3:20 PM
  */
 
-use Darryldecode\Cart\Cart;
+use Bnet\Cart\Cart;
 use Mockery as m;
 
 require_once __DIR__ . '/helpers/SessionMock.php';

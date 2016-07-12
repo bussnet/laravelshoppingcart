@@ -6,7 +6,7 @@
  * Time: 9:59 PM
  */
 
-use Darryldecode\Cart\Cart;
+use Bnet\Cart\Cart;
 use Mockery as m;
 
 require_once __DIR__ . '/helpers/SessionMock.php';
@@ -14,7 +14,7 @@ require_once __DIR__ . '/helpers/SessionMock.php';
 class CartTest extends PHPUnit_Framework_TestCase {
 
 	/**
-	 * @var Darryldecode\Cart\Cart
+	 * @var Bnet\Cart\Cart
 	 */
 	protected $cart;
 
@@ -61,6 +61,7 @@ class CartTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function test_cart_can_add_items_with_multidimensional_array() {
+		$this->assertCount(0, $this->cart->items()->toArray(), 'Cart should have 0 items');
 		$items = array(
 			array(
 				'id' => 456,
@@ -92,6 +93,7 @@ class CartTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function test_cart_can_add_item_without_attributes() {
+		$this->assertTrue($this->cart->isEmpty(), 'Cart should be empty');
 		$item = array(
 			'id' => 456,
 			'name' => 'Sample Item 1',
@@ -104,7 +106,7 @@ class CartTest extends PHPUnit_Framework_TestCase {
 		$this->assertFalse($this->cart->isEmpty(), 'Cart should not be empty');
 	}
 
-	public function test_cart_update_with_attribute_then_attributes_should_be_still_instance_of_ItemAttributeCollection() {
+	public function test_cart_update_with_attribute_then_attributes_should_be_still_instance_of_Attribute() {
 		$item = array(
 			'id' => 456,
 			'name' => 'Sample Item 1',
@@ -118,22 +120,24 @@ class CartTest extends PHPUnit_Framework_TestCase {
 		$this->cart->add($item);
 
 		// lets get the attribute and prove first its an instance of
-		// ItemAttributeCollection
+		// Attribute
 		$item = $this->cart->get(456);
 
-		$this->assertInstanceOf('Darryldecode\Cart\ItemAttributeCollection', $item->attributes);
+		$this->assertInstanceOf('Bnet\Cart\Attribute', $item->attributes);
+		$this->assertEquals('red', $item->attributes->get('color'), 'attribute value matched');
 
 		// now lets update the item with its new attributes
-		// when we get that item from cart, it should still be an instance of ItemAttributeCollection
+		// when we get that item from cart, it should still be an instance of Attribute
 		$updatedItem = array(
 			'attributes' => array(
 				'product_id' => '145',
-				'color' => 'red'
+				'color' => 'blue'
 			)
 		);
 		$this->cart->update(456, $updatedItem);
 
-		$this->assertInstanceOf('Darryldecode\Cart\ItemAttributeCollection', $item->attributes);
+		$this->assertInstanceOf('Bnet\Cart\Attribute', $item->attributes);
+		$this->assertEquals('blue', $item->attributes->get('color'), 'attribute value matched');
 	}
 
 	public function test_cart_items_attributes() {
@@ -397,19 +401,19 @@ class CartTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function test_should_throw_exception_when_provided_invalid_values_scenario_one() {
-		$this->setExpectedException('Darryldecode\Cart\Exceptions\InvalidItemException');
+		$this->setExpectedException('Bnet\Cart\Exceptions\InvalidItemException');
 
 		$this->cart->add(455, 'Sample Item', 10099, 0, array());
 	}
 
 	public function test_should_throw_exception_when_provided_invalid_values_scenario_two() {
-		$this->setExpectedException('Darryldecode\Cart\Exceptions\InvalidItemException');
+		$this->setExpectedException('Bnet\Cart\Exceptions\InvalidItemException');
 
 		$this->cart->add('', 'Sample Item', 10099, 2, array());
 	}
 
 	public function test_should_throw_exception_when_provided_invalid_values_scenario_three() {
-		$this->setExpectedException('Darryldecode\Cart\Exceptions\InvalidItemException');
+		$this->setExpectedException('Bnet\Cart\Exceptions\InvalidItemException');
 
 		$this->cart->add(523, '', 10099, 2, array());
 	}

@@ -1,12 +1,12 @@
 {
-    "name": "darryldecode/cart",
+    "name": "bnet/laravel-cart",
     "description": "Laravel 5 Shopping cart",
     "keywords": ["laravel", "shopping cart", "cart"],
     "license": "MIT",
     "authors": [
         {
-            "name": "Darryl Fernandez",
-            "email": "engrdarrylfernandez@gmail.com"
+            "name": "Thorsten Buss",
+            "email": "thorsten.buss@buss-networks.de"
         }
     ],
     "require": {
@@ -21,7 +21,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Darryldecode\\": "src/Darryldecode"
+            "Bnet\\": "src/"
         }
     },
     "minimum-stability": "dev"

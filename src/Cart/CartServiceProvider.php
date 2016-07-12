@@ -1,4 +1,4 @@
-<?php namespace Darryldecode\Cart;
+<?php namespace Bnet\Cart;
 
 use Illuminate\Support\ServiceProvider;
 

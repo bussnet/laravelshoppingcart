@@ -1,4 +1,4 @@
-<?php namespace Darryldecode\Cart\Validators;
+<?php namespace Bnet\Cart\Validators;
 
 use Symfony\Component\Translation\Translator;
 use Illuminate\Validation\Factory;
@@ -15,6 +15,7 @@ abstract class Validator {
 
 	public static function instance() {
 		if (!static::$factory) {
+//			$translator = new Translator(\Config::get('app.locale'));
 			$translator = new Translator('en');
 			static::$factory = new Factory($translator);
 		}

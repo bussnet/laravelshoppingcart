@@ -1,4 +1,4 @@
-<?php namespace Darryldecode\Cart;
+<?php namespace Bnet\Cart;
 
 /**
  * Created by PhpStorm.
@@ -9,7 +9,7 @@
 
 use Illuminate\Support\Collection;
 
-class ItemAttributeCollection extends Collection {
+class Attribute extends Collection {
 
 	public function __get($name) {
 		if ($this->has($name)) return $this->get($name);

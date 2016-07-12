@@ -6,7 +6,7 @@
  * Time: 6:17 PM
  */
 
-use Darryldecode\Cart\Cart;
+use Bnet\Cart\Cart;
 use Mockery as m;
 
 require_once __DIR__ . '/helpers/SessionMock.php';
@@ -14,7 +14,7 @@ require_once __DIR__ . '/helpers/SessionMock.php';
 class ItemTest extends PHPUnit_Framework_TestCase {
 
 	/**
-	 * @var Darryldecode\Cart\Cart
+	 * @var Bnet\Cart\Cart
 	 */
 	protected $cart;
 

@@ -1,4 +1,4 @@
-<?php namespace Darryldecode\Cart;
+<?php namespace Bnet\Cart;
 
 /**
  * Created by PhpStorm.
@@ -9,16 +9,15 @@
 
 use Illuminate\Support\Collection;
 
-class ItemCollection extends Collection {
-
-	/**
-	 * get the price
-	 *
-	 * @return mixed|null
-	 */
-	public function price() {
-		return $this->price;
-	}
+/**
+ * @property int id
+ * @property int quantity
+ * @property string name
+ * @property mixed|null price
+ * @property Attribute attributes
+ * @property Conditions conditions
+ */
+class Item extends Collection {
 
 	/**
 	 * get the sum of price
@@ -40,14 +39,13 @@ class ItemCollection extends Collection {
 	 * @return bool
 	 */
 	public function hasConditions() {
-		if (!isset($this['conditions'])) return false;
-		if (is_array($this['conditions'])) {
-			return count($this['conditions']) > 0;
-		}
-		$conditionInstance = "Darryldecode\\Cart\\CartCondition";
-		if ($this['conditions'] instanceof $conditionInstance) return true;
+		if (!isset($this['conditions']))
+			return false;
 
-		return false;
+		if (is_array($this['conditions']))
+			return count($this['conditions']) > 0;
+
+		return $this['conditions'] instanceof Condition;
 	}
 
 	/**

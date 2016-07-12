@@ -1,42 +1,27 @@
 # Laravel 5 Shopping Cart
-[![Build Status](https://travis-ci.org/darryldecode/laravelshoppingcart.svg?branch=master)](https://travis-ci.org/darryldecode/laravelshoppingcart)
-[![Total Downloads](https://poser.pugx.org/darryldecode/cart/d/total.svg)](https://packagist.org/packages/darryldecode/cart)
-[![License](https://poser.pugx.org/darryldecode/cart/license.svg)](https://packagist.org/packages/darryldecode/cart)
 
 A Shopping Cart Implementation for Laravel Framework
+
+*** THIS PACKAGE IS BASED ON darryldecode/cart - ALL CREDITS TO HIM ***
 
 ##INSTALLATION
 
 Install the package through [Composer](http://getcomposer.org/). Edit your project's `composer.json` file by adding:
 
-### Laravel 5
+    composer require "bnet/cart"
 
-```php
-"require": {
-	"laravel/framework": "5.0.*",
-	"darryldecode/cart": "dev-master"
-}
-```
-
-Next, run the Composer update command from the Terminal:
-
-    composer update
-
-    or
-
-    composer update "darryldecode/cart"
 
 ##CONFIGURATION
 
 1. Open config/app.php and addd this line to your Service Providers Array
   ```php
-  'Darryldecode\Cart\CartServiceProvider'
+  'Bnet\Cart\CartServiceProvider'
   ```
 
 2. Open config/app.php and addd this line to your Aliases
 
 ```php
-  'Cart' => 'Darryldecode\Cart\Facades\CartFacade'
+  'Cart' => 'Bnet\Cart\Facades\CartFacade'
   ```
 
 ## HOW TO USE
@@ -193,7 +178,7 @@ Getting cart's contents and count: **Cart::items()**
 /**
  * get the cart
  *
- * @return CartCollection
+ * @return Items
  */
 
 $cartCollection = Cart::items();
@@ -291,7 +276,7 @@ Also, when adding conditions, the 'value' field will be the bases of calculation
 ```php
 
 // add single condition on a cart bases
-$condition = new \Darryldecode\Cart\CartCondition(array(
+$condition = new \Bnet\Cart\CartCondition(array(
     'name' => 'VAT 12.5%',
     'type' => 'tax',
     'target' => 'subtotal',
@@ -305,13 +290,13 @@ $condition = new \Darryldecode\Cart\CartCondition(array(
 Cart::condition($condition);
 
 // or add multiple conditions from different condition instances
-$condition1 = new \Darryldecode\Cart\CartCondition(array(
+$condition1 = new \Bnet\Cart\CartCondition(array(
     'name' => 'VAT 12.5%',
     'type' => 'tax',
     'target' => 'subtotal',
     'value' => '12.5%',
 ));
-$condition2 = new \Darryldecode\Cart\CartCondition(array(
+$condition2 = new \Bnet\Cart\CartCondition(array(
     'name' => 'Express Shipping $15',
     'type' => 'shipping',
     'target' => 'subtotal',
@@ -366,7 +351,7 @@ Now let's add condition on an item.
 ```php
 
 // lets create first our condition instance
-$saleCondition = new \Darryldecode\Cart\CartCondition(array(
+$saleCondition = new \Bnet\Cart\CartCondition(array(
             'name' => 'SALE 5%',
             'type' => 'tax',
             'target' => 'item',
@@ -387,7 +372,7 @@ $product = array(
 Cart::add($product);
 
 // you may also add multiple condition on an item
-$itemCondition1 = new \Darryldecode\Cart\CartCondition(array(
+$itemCondition1 = new \Bnet\Cart\CartCondition(array(
     'name' => 'SALE 5%',
     'type' => 'sale',
     'target' => 'item',
@@ -399,7 +384,7 @@ $itemCondition2 = new CartCondition(array(
     'target' => 'item',
     'value' => '-25',
 ));
-$itemCondition3 = new \Darryldecode\Cart\CartCondition(array(
+$itemCondition3 = new \Bnet\Cart\CartCondition(array(
     'name' => 'MISC',
     'type' => 'misc',
     'target' => 'item',
@@ -672,7 +657,7 @@ foreach($items as $item)
     $item->quantity; // the quantity
     $item->attributes; // the attributes
 
-    // Note that attribute returns ItemAttributeCollection object that extends the native laravel collection
+    // Note that attribute returns Attribute object that extends the native laravel collection
     // so you can do things like below:
 
     if( $item->attributes->has('size') )
@@ -710,6 +695,12 @@ $items->each(function($item)
 ```
 
 ## Changelogs
+
+**3.0.0
+- the internal repesentation of amounts is now int instead of float
+- rename some functions (items() instead of getItems()) and classes (Item instead of ItemCollection) for better usage (more laravel style)
+- change the namespace to BNet
+- make item_rules customizable (preparing for own CartClass with additional custom item fields)
 
 **2.4.0
 - added new method on a condition: $condition->getAttributes(); (Please see [Conditions](#conditions) section)

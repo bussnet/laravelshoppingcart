@@ -1,8 +1,8 @@
-<?php namespace Darryldecode\Cart;
+<?php namespace Bnet\Cart;
 
-use Darryldecode\Cart\Exceptions\InvalidConditionException;
-use Darryldecode\Cart\Helpers\Helpers;
-use Darryldecode\Cart\Validators\CartConditionValidator;
+use Bnet\Cart\Exceptions\InvalidConditionException;
+use Bnet\Cart\Helpers\Helpers;
+use Bnet\Cart\Validators\ConditionValidator;
 
 /**
  * Created by PhpStorm.
@@ -10,7 +10,7 @@ use Darryldecode\Cart\Validators\CartConditionValidator;
  * Date: 1/15/2015
  * Time: 9:02 PM
  */
-class CartCondition {
+class Condition {
 
 	/**
 	 * @var array
@@ -216,7 +216,7 @@ class CartCondition {
 			'value' => 'required',
 		);
 
-		$validator = CartConditionValidator::make($args, $rules);
+		$validator = ConditionValidator::make($args, $rules);
 
 		if ($validator->fails()) {
 			throw new InvalidConditionException($validator->messages()->first());

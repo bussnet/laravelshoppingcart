@@ -1,13 +1,13 @@
-<?php namespace Darryldecode\Cart;
+<?php namespace Bnet\Cart;
 
-use Darryldecode\Cart\Exceptions\InvalidConditionException;
-use Darryldecode\Cart\Exceptions\InvalidItemException;
-use Darryldecode\Cart\Helpers\Helpers;
-use Darryldecode\Cart\Validators\CartItemValidator;
+use Bnet\Cart\Exceptions\InvalidConditionException;
+use Bnet\Cart\Exceptions\InvalidItemException;
+use Bnet\Cart\Helpers\Helpers;
+use Bnet\Cart\Validators\ItemValidator;
 
 /**
  * Class Cart
- * @package Darryldecode\Cart
+ * @package Bnet\Cart
  */
 class Cart {
 
@@ -86,7 +86,7 @@ class Cart {
 	 * get an item on a cart by item ID
 	 *
 	 * @param $itemId
-	 * @return mixed
+	 * @return Item
 	 */
 	public function get($itemId) {
 		return $this->items()->get($itemId);
@@ -110,7 +110,7 @@ class Cart {
 	 * @param int $price
 	 * @param int $quantity
 	 * @param array $attributes
-	 * @param CartCondition|array $conditions
+	 * @param Condition|array $conditions
 	 * @return $this
 	 * @throws InvalidItemException
 	 */
@@ -151,7 +151,7 @@ class Cart {
 			'name' => $name,
 			'price' => Helpers::normalizePrice($price),
 			'quantity' => $quantity,
-			'attributes' => new ItemAttributeCollection($attributes),
+			'attributes' => new Attribute($attributes),
 			'conditions' => $conditions,
 		));
 
@@ -209,7 +209,7 @@ class Cart {
 					$item = $this->updateQuantityRelative($item, $key, $value);
 				}
 			} elseif ($key == 'attributes') {
-				$item[$key] = new ItemAttributeCollection($value);
+				$item[$key] = new Attribute($value);
 			} else {
 				$item[$key] = $value;
 			}
@@ -226,30 +226,26 @@ class Cart {
 	 * add condition on an existing item on the cart
 	 *
 	 * @param int|string $productId
-	 * @param CartCondition $itemCondition
+	 * @param Condition $itemCondition
 	 * @return $this
 	 */
-	public function addItemCondition($productId, $itemCondition) {
+	public function addItemCondition($productId, Condition $itemCondition) {
 		if ($product = $this->get($productId)) {
-			$conditionInstance = "\\Darryldecode\\Cart\\CartCondition";
+			// we need to copy first to a temporary variable to hold the conditions
+			// to avoid hitting this error "Indirect modification of overloaded element of Bnet\Cart\Item has no effect"
+			// this is due to laravel Collection instance that implements Array Access
+			// // see link for more info: http://stackoverflow.com/questions/20053269/indirect-modification-of-overloaded-element-of-splfixedarray-has-no-effect
+			$itemConditionTempHolder = $product['conditions'];
 
-			if ($itemCondition instanceof $conditionInstance) {
-				// we need to copy first to a temporary variable to hold the conditions
-				// to avoid hitting this error "Indirect modification of overloaded element of Darryldecode\Cart\ItemCollection has no effect"
-				// this is due to laravel Collection instance that implements Array Access
-				// // see link for more info: http://stackoverflow.com/questions/20053269/indirect-modification-of-overloaded-element-of-splfixedarray-has-no-effect
-				$itemConditionTempHolder = $product['conditions'];
-
-				if (is_array($itemConditionTempHolder)) {
-					array_push($itemConditionTempHolder, $itemCondition);
-				} else {
-					$itemConditionTempHolder = $itemCondition;
-				}
-
-				$this->update($productId, array(
-					'conditions' => $itemConditionTempHolder // the newly updated conditions
-				));
+			if (is_array($itemConditionTempHolder)) {
+				array_push($itemConditionTempHolder, $itemCondition);
+			} else {
+				$itemConditionTempHolder = $itemCondition;
 			}
+
+			$this->update($productId, array(
+				'conditions' => $itemConditionTempHolder // the newly updated conditions
+			));
 		}
 
 		return $this;
@@ -289,7 +285,7 @@ class Cart {
 	/**
 	 * add a condition on the cart
 	 *
-	 * @param CartCondition|array $condition
+	 * @param Condition|array $condition
 	 * @return $this
 	 * @throws InvalidConditionException
 	 */
@@ -302,7 +298,7 @@ class Cart {
 			return $this;
 		}
 
-		if (!$condition instanceof CartCondition) throw new InvalidConditionException('Argument 1 must be an instance of \'Darryldecode\Cart\CartCondition\'');
+		if (!$condition instanceof Condition) throw new InvalidConditionException('Argument 1 must be an instance of \'Bnet\Cart\CartCondition\'');
 
 		$conditions = $this->getConditions();
 
@@ -316,17 +312,17 @@ class Cart {
 	/**
 	 * get conditions applied on the cart
 	 *
-	 * @return CartConditionCollection
+	 * @return Conditions
 	 */
 	public function getConditions() {
-		return new CartConditionCollection($this->session->get($this->sessionKeyCartConditions));
+		return new Conditions($this->session->get($this->sessionKeyCartConditions));
 	}
 
 	/**
 	 * get condition applied on the cart by its name
 	 *
 	 * @param $conditionName
-	 * @return CartCondition
+	 * @return Condition
 	 */
 	public function getCondition($conditionName) {
 		return $this->getConditions()->get($conditionName);
@@ -338,10 +334,10 @@ class Cart {
 	 * specifically on an per item bases
 	 *
 	 * @param $type
-	 * @return CartConditionCollection
+	 * @return Conditions
 	 */
 	public function getConditionsByType($type) {
-		return $this->getConditions()->filter(function (CartCondition $condition) use ($type) {
+		return $this->getConditions()->filter(function (Condition $condition) use ($type) {
 			return $condition->getType() == $type;
 		});
 	}
@@ -419,9 +415,7 @@ class Cart {
 			// on the given condition name the user wants to remove, if so,
 			// lets just make $item['conditions'] an empty array as there's just 1 condition on it anyway
 			else {
-				$conditionInstance = "Darryldecode\\Cart\\CartCondition";
-
-				if ($item['conditions'] instanceof $conditionInstance) {
+				if ($item['conditions'] instanceof Condition) {
 					if ($tempConditionsHolder->getName() == $conditionName) {
 						$item['conditions'] = array();
 					}
@@ -533,10 +527,10 @@ class Cart {
 	/**
 	 * get the cart
 	 *
-	 * @return CartCollection
+	 * @return Items
 	 */
 	public function items() {
-		return (new CartCollection($this->session->get($this->sessionKeyCartItems)));
+		return (new Items($this->session->get($this->sessionKeyCartItems)));
 	}
 
 	/**
@@ -545,7 +539,7 @@ class Cart {
 	 * @return bool
 	 */
 	public function isEmpty() {
-		$cart = new CartCollection($this->session->get($this->sessionKeyCartItems));
+		$cart = new Items($this->session->get($this->sessionKeyCartItems));
 
 		return $cart->isEmpty();
 	}
@@ -558,7 +552,7 @@ class Cart {
 	 * @throws InvalidItemException
 	 */
 	protected function validate($item) {
-		$validator = CartItemValidator::make($item, $this->item_rules);
+		$validator = ItemValidator::make($item, $this->item_rules);
 
 		if ($validator->fails()) {
 			throw new InvalidItemException($validator->messages()->first());
@@ -578,7 +572,7 @@ class Cart {
 
 		$cart = $this->items();
 
-		$cart->put($id, new ItemCollection($item));
+		$cart->put($id, new Item($item));
 
 		$this->save($cart);
 
@@ -588,7 +582,7 @@ class Cart {
 	/**
 	 * save the cart
 	 *
-	 * @param $cart CartCollection
+	 * @param $cart Items
 	 */
 	protected function save($cart) {
 		$this->session->put($this->sessionKeyCartItems, $cart);
@@ -610,17 +604,13 @@ class Cart {
 	 * @return bool
 	 */
 	protected function itemHasConditions($item) {
-		if (!isset($item['conditions'])) return false;
+		if (!isset($item['conditions']))
+			return false;
 
-		if (is_array($item['conditions'])) {
+		if (is_array($item['conditions']))
 			return count($item['conditions']) > 0;
-		}
 
-		$conditionInstance = "Darryldecode\\Cart\\CartCondition";
-
-		if ($item['conditions'] instanceof $conditionInstance) return true;
-
-		return false;
+		return $item['conditions'] instanceof Condition;
 	}
 
 	/**
