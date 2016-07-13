@@ -61,7 +61,7 @@ class CartTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function test_cart_can_add_items_with_multidimensional_array() {
-		$this->assertCount(0, $this->cart->items()->toArray(), 'Cart should have 0 items');
+		$this->assertEquals(0, count($this->cart->items()->toArray()), 'Cart should have 0 items');
 		$items = array(
 			array(
 				'id' => 456,
@@ -89,7 +89,7 @@ class CartTest extends PHPUnit_Framework_TestCase {
 		$this->cart->add($items);
 
 		$this->assertFalse($this->cart->isEmpty(), 'Cart should not be empty');
-		$this->assertCount(3, $this->cart->items()->toArray(), 'Cart should have 3 items');
+		$this->assertEquals(3, count($this->cart->items()->toArray()), 'Cart should have 3 items');
 	}
 
 	public function test_cart_can_add_item_without_attributes() {
@@ -155,7 +155,7 @@ class CartTest extends PHPUnit_Framework_TestCase {
 		$this->cart->add($item);
 
 		$this->assertFalse($this->cart->isEmpty(), 'Cart should not be empty');
-		$this->assertCount(2, $this->cart->items()->first()['attributes'], 'Item\'s attribute should have two');
+		$this->assertEquals(2, count($this->cart->items()->first()['attributes']), 'Item\'s attribute should have two');
 		$this->assertEquals('L', $this->cart->items()->first()->attributes->size, 'Item should have attribute size of L');
 		$this->assertEquals('blue', $this->cart->items()->first()->attributes->color, 'Item should have attribute color of blue');
 		$this->assertTrue($this->cart->get(456)->has('attributes'), 'Item should have attributes');
@@ -268,7 +268,7 @@ class CartTest extends PHPUnit_Framework_TestCase {
 
 		$this->cart->remove($removeItemId);
 
-		$this->assertCount(2, $this->cart->items()->toArray(), 'Cart must have 2 items left');
+		$this->assertEquals(2, count($this->cart->items()->toArray()), 'Cart must have 2 items left');
 		$this->assertFalse($this->cart->items()->has($removeItemId), 'Cart must have not contain the remove item anymore');
 	}
 

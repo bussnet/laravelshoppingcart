@@ -372,12 +372,12 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 		$this->cart->add($item);
 
 		// let's prove first we have 1 condition on this item
-		$this->assertCount(1, $this->cart->get($item['id'])['conditions'], "Item should have 1 condition");
+		$this->assertEquals(1, count($this->cart->get($item['id'])['conditions']), "Item should have 1 condition");
 
 		// now let's insert a condition on an existing item on the cart
 		$this->cart->addItemCondition($item['id'], $coupon101);
 
-		$this->assertCount(2, $this->cart->get($item['id'])['conditions'], "Item should have 2 conditions");
+		$this->assertEquals(2, count($this->cart->get($item['id'])['conditions']), "Item should have 2 conditions");
 	}
 
 	public function test_add_item_condition_restrict_negative_price() {
@@ -504,13 +504,13 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 		$this->cart->add($item);
 
 		// let's very first the item has 2 conditions in it
-		$this->assertCount(2, $this->cart->get(456)['conditions'], 'Item should have two conditions');
+		$this->assertEquals(2, count($this->cart->get(456)['conditions']), 'Item should have two conditions');
 
 		// now let's remove a condition on that item using the condition name
 		$this->cart->removeItemCondition(456, 'SALE 5%');
 
 		// now we should have only 1 condition left on that item
-		$this->assertCount(1, $this->cart->get(456)['conditions'], 'Item should have one condition left');
+		$this->assertEquals(1, count($this->cart->get(456)['conditions']), 'Item should have one condition left');
 	}
 
 	public function test_remove_item_condition_by_condition_name_scenario_two() {
@@ -570,13 +570,13 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 		$this->cart->add($item);
 
 		// let's very first the item has 2 conditions in it
-		$this->assertCount(2, $this->cart->get(456)['conditions'], 'Item should have two conditions');
+		$this->assertEquals(2, count($this->cart->get(456)['conditions']), 'Item should have two conditions');
 
 		// now let's remove all condition on that item
 		$this->cart->clearItemConditions(456);
 
 		// now we should have only 0 condition left on that item
-		$this->assertCount(0, $this->cart->get(456)['conditions'], 'Item should have no conditions now');
+		$this->assertEquals(0, count($this->cart->get(456)['conditions']), 'Item should have no conditions now');
 	}
 
 	public function test_clear_cart_conditions() {
