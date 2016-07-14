@@ -12,7 +12,8 @@
     "require": {
         "php": ">=5.4.0",
         "illuminate/support": "5.0.x|5.1.x|5.2.x",
-        "illuminate/validation": "5.0.x|5.1.x|5.2.x"
+        "illuminate/validation": "5.0.x|5.1.x|5.2.x",
+        "bnet/money-datatype": "^0.1.0"
     },
     "require-dev": {
         "mockery/mockery": "~0.9",

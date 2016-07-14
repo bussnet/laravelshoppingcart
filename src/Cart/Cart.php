@@ -48,7 +48,7 @@ class Cart {
 
 	protected $item_rules = array(
 		'id' => 'required',
-		'price' => 'required|numeric',
+//		'price' => 'required|numeric',
 		'quantity' => 'required|numeric|min:1',
 		'name' => 'required',
 	);
@@ -56,10 +56,10 @@ class Cart {
 	/**
 	 * our object constructor
 	 *
-	 * @param $session
-	 * @param $events
-	 * @param $instanceName
-	 * @param $session_key
+	 * @param \Symfony\Component\HttpFoundation\Session\SessionInterface $session
+	 * @param \Illuminate\Contracts\Events\Dispatcher $events
+	 * @param string $instanceName
+	 * @param string $session_key
 	 * @param array $custom_item_rules overwrite existing item_rules
 	 */
 	public function __construct($session, $events, $instanceName, $session_key, $custom_item_rules=[]) {
@@ -470,7 +470,7 @@ class Cart {
 	public function subTotal() {
 		$cart = $this->items();
 
-		$sum = $cart->sum(function ($item) {
+		$sum = $cart->sum(function (Item $item) {
 			return $item->priceSumWithConditions();
 		});
 
@@ -539,9 +539,7 @@ class Cart {
 	 * @return bool
 	 */
 	public function isEmpty() {
-		$cart = new Items($this->session->get($this->sessionKeyCartItems));
-
-		return $cart->isEmpty();
+		return $this->items()->isEmpty();
 	}
 
 	/**
@@ -570,13 +568,22 @@ class Cart {
 	protected function addRow($id, $item) {
 		$this->events->fire($this->getInstanceName() . '.adding', array($item, $this));
 
-		$cart = $this->items();
+		$items = $this->items();
 
-		$cart->put($id, new Item($item));
+		$items->put($id, $this->createCartItem($item));
 
-		$this->save($cart);
+		$this->save($items);
 
 		$this->events->fire($this->getInstanceName() . '.added', array($item, $this));
+	}
+
+	/**
+	 * create the object for an cart item
+	 * @param $data
+	 * @return Item
+	 */
+	protected function createCartItem($data) {
+		return new Item($data);
 	}
 
 	/**

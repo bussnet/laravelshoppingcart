@@ -25,7 +25,7 @@ class Item extends Collection {
 	 * @return mixed|null
 	 */
 	public function priceSum() {
-		return $this->price * $this->quantity;
+		return $this->price() * $this->quantity;
 	}
 
 	public function __get($name) {
@@ -49,12 +49,20 @@ class Item extends Collection {
 	}
 
 	/**
+	 * return the price amount for this item
+	 * @return int
+	 */
+	public function price() {
+		return $this->price;
+	}
+
+	/**
 	 * get the single price in which conditions are already applied
 	 *
 	 * @return mixed|null
 	 */
 	public function priceWithConditions() {
-		$originalPrice = $this->price;
+		$originalPrice = $this->price();
 		$newPrice = 0;
 		$processed = 0;
 

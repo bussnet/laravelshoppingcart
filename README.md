@@ -701,6 +701,7 @@ $items->each(function($item)
 - rename some functions (items() instead of getItems()) and classes (Item instead of ItemCollection) for better usage (more laravel style)
 - change the namespace to BNet
 - make item_rules customizable (preparing for own CartClass with additional custom item fields)
+- add CurrencyCart for use a cart with Money() prices instead of int
 
 **2.4.0
 - added new method on a condition: $condition->getAttributes(); (Please see [Conditions](#conditions) section)

@@ -1,4 +1,5 @@
 <?php namespace Bnet\Cart\Helpers;
+use Bnet\Money\Money;
 
 /**
  * Created by PhpStorm.
@@ -23,6 +24,8 @@ class Helpers {
 	 * @return int
 	 */
 	public static function normalizePrice($price) {
+		if ($price instanceof Money)
+			return $price;
 		return (is_string($price)) ? intval($price) : $price;
 	}
 
@@ -31,6 +34,8 @@ class Helpers {
 	 * @param int $mode
 	 */
 	public static function intval($value, $mode = self::DEFAULT_ROUND_MODE) {
+		if ($value instanceof Money)
+			return $value;
 		return self::round($value, 0, $mode);
 	}
 
@@ -40,6 +45,8 @@ class Helpers {
 	 * @param int $mode
 	 */
 	public static function round($value, $precision = 0, $mode = self::DEFAULT_ROUND_MODE) {
+		if ($value instanceof Money)
+			return $value;
 		return round($value, $precision, $mode);
 	}
 
