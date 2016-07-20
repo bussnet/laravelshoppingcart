@@ -15,13 +15,13 @@ Install the package through [Composer](http://getcomposer.org/). Edit your proje
 
 1. Open config/app.php and addd this line to your Service Providers Array
   ```php
-  'Bnet\Cart\CartServiceProvider'
+  Bnet\Cart\CartServiceProvider::class
   ```
 
 2. Open config/app.php and addd this line to your Aliases
 
 ```php
-  'Cart' => 'Bnet\Cart\Facades\CartFacade'
+  'Cart' => Bnet\Cart\Facades\CartFacade::class
   ```
 
 ## HOW TO USE
