@@ -8,7 +8,7 @@ A Shopping Cart Implementation for Laravel Framework
 
 Install the package through [Composer](http://getcomposer.org/). Edit your project's `composer.json` file by adding:
 
-    composer require "bnet/cart"
+    composer require "bnet/laravel-cart"
 
 
 ##CONFIGURATION
