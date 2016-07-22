@@ -23,14 +23,14 @@ class CurrencyCart extends Cart {
 	/**
 	 * our object constructor
 	 *
-	 * @param \Symfony\Component\HttpFoundation\Session\SessionInterface $session
+	 * @param \Illuminate\Session\SessionManager $session
 	 * @param \Illuminate\Contracts\Events\Dispatcher $events
 	 * @param string $instanceName
 	 * @param string $session_key
 	 * @param string|Currency $currency Alpha IsoCode of the Currency of this Cart - only items with this currency are allowed and items without currency get this currency
 	 * @param array $custom_item_rules overwrite existing item_rules
 	 */
-	public function __construct(\Symfony\Component\HttpFoundation\Session\SessionInterface $session, \Illuminate\Contracts\Events\Dispatcher $events, $instanceName, $session_key, $currency='EUR', $custom_item_rules = []) {
+	public function __construct($session, \Illuminate\Contracts\Events\Dispatcher $events, $instanceName, $session_key, $currency='EUR', $custom_item_rules = []) {
 		$this->currency = $currency instanceof Currency ? $currency : new Currency($currency);
 		parent::__construct($session, $events, $instanceName, $session_key, $custom_item_rules);
 	}
@@ -104,7 +104,7 @@ class CurrencyCart extends Cart {
 	 * @return $this
 	 * @throws \Bnet\Cart\Exceptions\InvalidItemException
 	 */
-	public function add($id, $name = null, Money $price = null, $quantity = 1, $attributes = array(), $conditions = array()) {
+	public function add($id, $name = null, $price = null, $quantity = 1, $attributes = array(), $conditions = array()) {
 		if (!is_null($price) && !$price->currency()->equals($this->currency))
 			throw new \Bnet\Cart\Exceptions\CurrencyNotMachedException('given item-currency ['.$price->currency()->code.'] does not match to cart currency ['.$this->currency->code.']' );
 		return parent::add($id, $name, $price, $quantity, $attributes, $conditions);

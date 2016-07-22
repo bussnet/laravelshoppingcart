@@ -25,25 +25,14 @@ class CurrencyItem extends Item {
 	protected $currency;
 
 	/**
-	 * Create a new collection.
+	 * Create a new Item with the given attributes.
 	 *
-	 * @param  mixed $items
-	 * @return void
+	 * @param mixed $attributes
+	 * @param string|Currency $currency
 	 */
-	public function __construct($items, $currency) {
+	public function __construct($attributes, $currency) {
 		$this->currency = $currency;
-		parent::__construct($items);
-	}
-
-
-	/**
-	 * return the price amount for this item
-	 * @return int|null
-	 */
-	public function price() {
-		return $this->price->amount();
-		$price = $this->price;
-		return $price instanceOf Money ?  $price->amount() : $price;
+		parent::__construct($attributes);
 	}
 
 	/**
@@ -52,7 +41,7 @@ class CurrencyItem extends Item {
 	 * @return Money
 	 */
 	public function priceSum() {
-		return new Money(parent::priceSum(), $this->currency);
+		return $this->price->multiply($this->quantity);
 	}
 
 	/**
@@ -61,7 +50,28 @@ class CurrencyItem extends Item {
 	 * @return Money
 	 */
 	public function priceWithConditions() {
-		return new Money((int)parent::priceWithConditions(), $this->currency);
+		$originalPrice = $this->price->amount();
+		$newPrice = 0;
+		$processed = 0;
+
+		if ($this->hasConditions()) {
+			if (is_array($this->conditions)) {
+				foreach ($this->conditions as $condition) {
+					if ($condition->getTarget() === 'item') {
+						($processed > 0) ? $toBeCalculated = $newPrice : $toBeCalculated = $originalPrice;
+						$newPrice = $condition->applyCondition($toBeCalculated);
+						$processed++;
+					}
+				}
+			} else {
+				if ($this['conditions']->getTarget() === 'item') {
+					$newPrice = $this['conditions']->applyCondition($originalPrice);
+				}
+			}
+
+			return new Money((int)$newPrice, $this->currency);
+		}
+		return new Money((int)$originalPrice, $this->currency);
 	}
 
 	/**
@@ -70,8 +80,7 @@ class CurrencyItem extends Item {
 	 * @return Money
 	 */
 	public function priceSumWithConditions() {
-		$sum = $this->priceWithConditions()->amount() * $this->quantity;
-		return new Money((int)$sum, $this->currency);
+		return $this->priceWithConditions()->multiply($this->quantity);
 	}
 	
 }

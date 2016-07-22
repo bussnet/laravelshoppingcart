@@ -13,9 +13,16 @@ Install the package through [Composer](http://getcomposer.org/). Edit your proje
 
 ##CONFIGURATION
 
-1. Open config/app.php and addd this line to your Service Providers Array
+1. Open config/app.php and addd this line to your Service Providers Array if you want int prices
+
   ```php
   Bnet\Cart\CartServiceProvider::class
+  ```
+  
+  OR if you want Money() prices:
+  
+  ```php
+  Bnet\Cart\CurrencyCartServiceProvider::class
   ```
 
 2. Open config/app.php and addd this line to your Aliases
@@ -695,6 +702,11 @@ $items->each(function($item)
 ```
 
 ## Changelogs
+
+**3.1.0
+- allow to add an already created Item Object or a list of items
+- add CurrencyCartServiceProvider
+- change the calculation-princip of the currencyItems
 
 **3.0.0
 - the internal repesentation of amounts is now int instead of float

@@ -200,7 +200,20 @@ class CurrencyCartTest extends PHPUnit_Framework_TestCase {
 		$item = $this->cart->get($itemIdToEvaluate);
 		$this->assertEquals('Renamed', $item['name'], 'Item name should be "Renamed"');
 		$this->assertEquals(105, $item['price']->amount(), 'Item price should be 105');
-		$this->assertEquals(5, $item['quantity'], 'Item quantity should be 2');
+		$this->assertEquals(5, $item['quantity'], 'Item quantity should be 8');
+
+		// add the first icon again - should update
+		$this->cart->add([
+			'id' => 456,
+			'name' => 'Sample Item 1',
+			'price' => new Money(6799),
+			'quantity' => 3,
+			'attributes' => array()
+		]);
+		$item = $this->cart->get($itemIdToEvaluate);
+		$this->assertEquals('Sample Item 1', $item['name'], 'Item name should be "Sample Item 1"');
+		$this->assertEquals(6799, $item['price']->amount(), 'Item price should be 6799');
+		$this->assertEquals(8, $item['quantity'], 'Item quantity should be 8');
 	}
 
 	public function test_cart_update_existing_item_with_quantity_as_array_and_not_relative() {

@@ -143,17 +143,26 @@ class Cart {
 			}
 
 			return $this;
+		} elseif ($id instanceOf Item) {
+			$item = $id;
+			$id = $item->id;
+		} elseif ($id instanceOf Items) {
+			foreach ($id as $item) {
+				$this->add($item);
+			}
+			return $this;
+		} else {
+			// validate data
+			$item = $this->validate(array(
+				'id' => $id,
+				'name' => $name,
+				'price' => Helpers::normalizePrice($price),
+				'quantity' => $quantity,
+				'attributes' => new Attribute($attributes),
+				'conditions' => $conditions,
+			));
 		}
 
-		// validate data
-		$item = $this->validate(array(
-			'id' => $id,
-			'name' => $name,
-			'price' => Helpers::normalizePrice($price),
-			'quantity' => $quantity,
-			'attributes' => new Attribute($attributes),
-			'conditions' => $conditions,
-		));
 
 		// get the cart
 		$cart = $this->items();
@@ -566,11 +575,15 @@ class Cart {
 	 * @param $item
 	 */
 	protected function addRow($id, $item) {
+		// convert array to CartItem
+		if (!$item instanceof Item)
+			$item = $this->createCartItem($item);
+
 		$this->events->fire($this->getInstanceName() . '.adding', array($item, $this));
 
 		$items = $this->items();
 
-		$items->put($id, $this->createCartItem($item));
+		$items->put($id, $item);
 
 		$this->save($items);
 

@@ -19,6 +19,18 @@ use Illuminate\Support\Collection;
  */
 class Item extends Collection {
 
+
+	/**
+	 * Create a new Item with the given attributes.
+	 *
+	 * @param mixed $attributes
+	 * @return void
+	 */
+	public function __construct($attributes) {
+		parent::__construct($attributes);
+	}
+
+
 	/**
 	 * get the sum of price
 	 *
