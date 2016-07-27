@@ -286,7 +286,7 @@ Also, when adding conditions, the 'value' field will be the bases of calculation
 $condition = new \Bnet\Cart\CartCondition(array(
     'name' => 'VAT 12.5%',
     'type' => 'tax',
-    'target' => 'subtotal',
+    'target' => 'cart',
     'value' => '12.5%',
     'attributes' => array( // attributes field is optional
     	'description' => 'Value added tax',
@@ -300,13 +300,13 @@ Cart::condition($condition);
 $condition1 = new \Bnet\Cart\CartCondition(array(
     'name' => 'VAT 12.5%',
     'type' => 'tax',
-    'target' => 'subtotal',
+    'target' => 'cart',
     'value' => '12.5%',
 ));
 $condition2 = new \Bnet\Cart\CartCondition(array(
     'name' => 'Express Shipping $15',
     'type' => 'shipping',
-    'target' => 'subtotal',
+    'target' => 'cart',
     'value' => '+15',
 ));
 Cart::condition($condition1);
@@ -703,10 +703,15 @@ $items->each(function($item)
 
 ## Changelogs
 
+**3.1.1
+- cart is completly "Arrayable"
+- condition target is optional and subtotal is changed to cart
+
 **3.1.0
 - allow to add an already created Item Object or a list of items
 - add CurrencyCartServiceProvider
-- change the calculation-princip of the currencyItems
+- change the calculation-princip of the currencyIt
+ems
 
 **3.0.0
 - the internal repesentation of amounts is now int instead of float

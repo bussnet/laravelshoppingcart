@@ -4,12 +4,14 @@ use Bnet\Cart\Exceptions\InvalidConditionException;
 use Bnet\Cart\Exceptions\InvalidItemException;
 use Bnet\Cart\Helpers\Helpers;
 use Bnet\Cart\Validators\ItemValidator;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
 
 /**
  * Class Cart
  * @package Bnet\Cart
  */
-class Cart {
+class Cart implements Jsonable, \JsonSerializable, Arrayable{
 
 	/**
 	 * the item storage
@@ -307,7 +309,13 @@ class Cart {
 			return $this;
 		}
 
-		if (!$condition instanceof Condition) throw new InvalidConditionException('Argument 1 must be an instance of \'Bnet\Cart\CartCondition\'');
+		if (!$condition instanceof Condition)
+			throw new InvalidConditionException('Argument 1 must be an instance of \'Bnet\Cart\CartCondition\'');
+
+		// set target to cart if not set
+		$condition->setTarget($condition->getTarget() ?: 'cart');
+		if ($condition->getTarget() !== 'cart')
+			throw new InvalidConditionException('target have to be cart for cart conditions');
 
 		$conditions = $this->getConditions();
 
@@ -504,7 +512,7 @@ class Cart {
 		if (!$conditions->count()) return $subTotal;
 
 		$conditions->each(function ($cond) use ($subTotal, &$newTotal, &$process) {
-			if ($cond->getTarget() === 'subtotal') {
+			if ($cond->getTarget() === 'cart') {
 				($process > 0) ? $toBeCalculated = $newTotal : $toBeCalculated = $subTotal;
 
 				$newTotal = $cond->applyCondition($toBeCalculated);
@@ -672,4 +680,76 @@ class Cart {
 
 		return $item;
 	}
+
+
+	/**
+	 * Get the instance as an array.
+	 *
+	 * @return array
+	 */
+	public function toArray() {
+		return [
+			'items' => $this->items()->toArray(),
+			'conditions' => $this->getConditions()->toArray()
+		];
+	}
+
+	/**
+	 * Get the evaluated contents of the object.
+	 *
+	 * @return string
+	 */
+	public function render() {
+		$items = '';
+		/** @var Item $item */
+		foreach ($this->items()->all() as $item) {
+			$items .= "\n		<tr>
+			<td>{$item->quantity}</td><td>{$item->name}</td><td>{$item->price}</td><td>{$item->priceSum()}</td>
+		</tr>";
+		}
+		return <<<EOF
+<table class="cart">
+	<thead>
+		<tr>
+			<td>Qty.</td><td>Name</td><td>Price</td><td>Sum</td>
+		</tr>
+	</thead>
+	<tbody>
+		$items
+	</tbody>
+</table>
+EOF;
+	}
+
+	/**
+	 * __toString.
+	 *
+	 * @return string
+	 */
+	public function __toString() {
+		return $this->render();
+	}
+
+	/**
+	 * Convert the object to its JSON representation.
+	 *
+	 * @param  int $options
+	 * @return string
+	 */
+	public function toJson($options = 0) {
+		return json_encode($this->toArray(), $options);
+	}
+
+	/**
+	 * Specify data which should be serialized to JSON
+	 * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
+	 * @return mixed data which can be serialized by <b>json_encode</b>,
+	 * which is a value of any type other than a resource.
+	 * @since 5.4.0
+	 */
+	function jsonSerialize() {
+		return $this->toArray();
+	}
+
+
 }

@@ -1,40 +1,46 @@
-<?php namespace Bnet\Cart;
+<?php
+namespace Bnet\Cart;
 
 use Bnet\Cart\Exceptions\InvalidConditionException;
 use Bnet\Cart\Helpers\Helpers;
 use Bnet\Cart\Validators\ConditionValidator;
+use Illuminate\Support\Collection;
 
 /**
- * Created by PhpStorm.
- * User: darryl
- * Date: 1/15/2015
- * Time: 9:02 PM
+ * Class Condition
+ * @package Bnet\Cart
  */
-class Condition {
+class Condition extends Collection {
 
 	/**
+	 * List of validation rules for the condition
 	 * @var array
 	 */
-	private $args;
+	protected $rules = [
+			'name' => 'required',
+			'type' => 'required|string',
+			'target' => 'sometimes|required|in:item,cart',
+			'value' => 'required|string',
+	];
 
 	/**
 	 * the parsed raw value of the condition
 	 *
 	 * @var
 	 */
-	private $parsedRawValue;
+	protected $parsedRawValue;
 
 	/**
 	 * @param array $args (name, type, target, value)
 	 * @throws InvalidConditionException
 	 */
 	public function __construct(array $args) {
-		$this->args = $args;
+		parent::__construct($args);
 
 		if (Helpers::isMultiArray($args)) {
 			Throw new InvalidConditionException('Multi dimensional array is not supported.');
 		} else {
-			$this->validate($this->args);
+			$this->validate($this->items);
 		}
 	}
 
@@ -44,7 +50,14 @@ class Condition {
 	 * @return mixed
 	 */
 	public function getTarget() {
-		return $this->args['target'];
+		return $this->get('target');
+	}
+
+	/**
+	 * @param $target
+	 */
+	public function setTarget($target) {
+		$this->items['target'] = $target;
 	}
 
 	/**
@@ -53,7 +66,7 @@ class Condition {
 	 * @return mixed
 	 */
 	public function getName() {
-		return $this->args['name'];
+		return $this->get('name');
 	}
 
 	/**
@@ -62,7 +75,7 @@ class Condition {
 	 * @return mixed
 	 */
 	public function getType() {
-		return $this->args['type'];
+		return $this->get('type');
 	}
 
 	/**
@@ -71,7 +84,7 @@ class Condition {
 	 * @return array
 	 */
 	public function getAttributes() {
-		return (isset($this->args['attributes'])) ? $this->args['attributes'] : array();
+		return (isset($this->items['attributes'])) ? $this->items['attributes'] : array();
 	}
 
 	/**
@@ -80,7 +93,7 @@ class Condition {
 	 * @return mixed
 	 */
 	public function getValue() {
-		return $this->args['value'];
+		return $this->get('value');
 	}
 
 	/**
@@ -119,23 +132,13 @@ class Condition {
 		// percentage, whether to add or subtract it to the total/subtotal/price
 		// if we can't find any plus/minus sign, we will assume it as plus sign
 		if ($this->valueIsPercentage($conditionValue)) {
+
+			$value = Helpers::normalizePercentage($this->cleanValue($conditionValue));
+			$this->parsedRawValue = $totalOrSubTotalOrPrice * ($value / 100);
+
 			if ($this->valueIsToBeSubtracted($conditionValue)) {
-				$value = Helpers::normalizePercentage($this->cleanValue($conditionValue));
-
-				$this->parsedRawValue = $totalOrSubTotalOrPrice * ($value / 100);
-
 				$result = Helpers::intval($totalOrSubTotalOrPrice - $this->parsedRawValue);
-			} else if ($this->valueIsToBeAdded($conditionValue)) {
-				$value = Helpers::normalizePercentage($this->cleanValue($conditionValue));
-
-				$this->parsedRawValue = $totalOrSubTotalOrPrice * ($value / 100);
-
-				$result = Helpers::intval($totalOrSubTotalOrPrice + $this->parsedRawValue);
 			} else {
-				$value = Helpers::normalizePercentage($conditionValue);
-
-				$this->parsedRawValue = $totalOrSubTotalOrPrice * ($value / 100);
-
 				$result = Helpers::intval($totalOrSubTotalOrPrice + $this->parsedRawValue);
 			}
 		}
@@ -143,17 +146,12 @@ class Condition {
 		// if the value has no percent sign on it, the operation will not be a percentage
 		// next is we will check if it has a minus/plus sign so then we can just deduct it to total/subtotal/price
 		else {
+
+			$this->parsedRawValue = Helpers::normalizePrice($this->cleanValue($conditionValue));
+
 			if ($this->valueIsToBeSubtracted($conditionValue)) {
-				$this->parsedRawValue = Helpers::normalizePrice($this->cleanValue($conditionValue));
-
 				$result = Helpers::intval($totalOrSubTotalOrPrice - $this->parsedRawValue);
-			} else if ($this->valueIsToBeAdded($conditionValue)) {
-				$this->parsedRawValue = Helpers::normalizePrice($this->cleanValue($conditionValue));
-
-				$result = Helpers::intval($totalOrSubTotalOrPrice + $this->parsedRawValue);
 			} else {
-				$this->parsedRawValue = Helpers::normalizePrice($conditionValue);
-
 				$result = Helpers::intval($totalOrSubTotalOrPrice + $this->parsedRawValue);
 			}
 		}
@@ -209,17 +207,21 @@ class Condition {
 	 * @throws InvalidConditionException
 	 */
 	protected function validate($args) {
-		$rules = array(
-			'name' => 'required',
-			'type' => 'required',
-			'target' => 'required',
-			'value' => 'required',
-		);
-
-		$validator = ConditionValidator::make($args, $rules);
+		$validator = ConditionValidator::make($args, $this->rules);
 
 		if ($validator->fails()) {
 			throw new InvalidConditionException($validator->messages()->first());
 		}
 	}
+
+	/**
+	 * map the $porperty to the function
+	 * @param $name
+	 * @return mixed|null
+	 */
+	public function __get($name) {
+		if ($this->has($name)) return $this->get($name);
+		return null;
+	}
+
 }

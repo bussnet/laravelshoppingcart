@@ -15,8 +15,8 @@ abstract class Validator {
 
 	public static function instance() {
 		if (!static::$factory) {
-//			$translator = new Translator(\Config::get('app.locale'));
-			$translator = new Translator('en');
+			$locale = class_exists('\Config') ? \Config::get('app.locale') : 'en';
+			$translator = new Translator($locale);
 			static::$factory = new Factory($translator);
 		}
 

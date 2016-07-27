@@ -84,7 +84,7 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 		$condition = new Condition(array(
 			'name' => 'VAT 12.5%',
 			'type' => 'tax',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '12.5%',
 		));
 
@@ -106,13 +106,13 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 		$condition1 = new Condition(array(
 			'name' => 'VAT 12.5%',
 			'type' => 'tax',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '12.5%',
 		));
 		$condition2 = new Condition(array(
 			'name' => 'Express Shipping $15',
 			'type' => 'shipping',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '+1500',
 		));
 
@@ -135,13 +135,13 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 		$condition1 = new Condition(array(
 			'name' => 'VAT 12.5%',
 			'type' => 'tax',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '12.5%',
 		));
 		$condition2 = new Condition(array(
 			'name' => 'Express Shipping $15',
 			'type' => 'shipping',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-1500',
 		));
 
@@ -164,13 +164,13 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 		$condition1 = new Condition(array(
 			'name' => 'VAT 12.5%',
 			'type' => 'tax',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-12.5%',
 		));
 		$condition2 = new Condition(array(
 			'name' => 'Express Shipping $15',
 			'type' => 'shipping',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-1500',
 		));
 
@@ -193,13 +193,13 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 		$condition1 = new Condition(array(
 			'name' => 'VAT 12.5%',
 			'type' => 'tax',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-12.5%',
 		));
 		$condition2 = new Condition(array(
 			'name' => 'Express Shipping $15',
 			'type' => 'shipping',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-1500',
 		));
 
@@ -221,13 +221,13 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 		$condition1 = new Condition(array(
 			'name' => 'COUPON LESS 12.5%',
 			'type' => 'tax',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-12.5%',
 		));
 		$condition2 = new Condition(array(
 			'name' => 'Express Shipping $15',
 			'type' => 'shipping',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '+1500',
 		));
 
@@ -245,7 +245,6 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 		$condition1 = new Condition(array(
 			'name' => 'SALE 5%',
 			'type' => 'tax',
-			'target' => 'item',
 			'value' => '-5%',
 		));
 
@@ -309,7 +308,7 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 		$itemCondition1 = new Condition(array(
 			'name' => 'SALE 5%',
 			'type' => 'sale',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-5%',
 		)); // --> this should not be included in calculation
 		$itemCondition2 = new Condition(array(
@@ -327,7 +326,7 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 		$itemCondition4 = new Condition(array(
 			'name' => 'MISC 2',
 			'type' => 'misc2',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '+10%',
 		));// --> this should not be included in calculation
 
@@ -410,13 +409,13 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 		$itemCondition1 = new Condition(array(
 			'name' => 'SALE 5%',
 			'type' => 'sale',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-5%',
 		));
 		$itemCondition2 = new Condition(array(
 			'name' => 'Item Gift Pack 2500',
 			'type' => 'promo',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-2500',
 		));
 
@@ -436,7 +435,7 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 		$condition = $this->cart->getCondition($itemCondition1->getName());
 
 		$this->assertEquals($condition->getName(), 'SALE 5%');
-		$this->assertEquals($condition->getTarget(), 'subtotal');
+		$this->assertEquals($condition->getTarget(), 'cart');
 		$this->assertEquals($condition->getType(), 'sale');
 		$this->assertEquals($condition->getValue(), '-5%');
 	}
@@ -445,13 +444,13 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 		$itemCondition1 = new Condition(array(
 			'name' => 'SALE 5%',
 			'type' => 'sale',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-5%',
 		));
 		$itemCondition2 = new Condition(array(
 			'name' => 'Item Gift Pack 2500',
 			'type' => 'promo',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-2500',
 		));
 
@@ -587,13 +586,13 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 		$itemCondition1 = new Condition(array(
 			'name' => 'SALE 5%',
 			'type' => 'sale',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-5%',
 		));
 		$itemCondition2 = new Condition(array(
 			'name' => 'Item Gift Pack 2500',
 			'type' => 'promo',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-2500',
 		));
 
@@ -623,13 +622,13 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 		$cartCondition1 = new Condition(array(
 			'name' => 'SALE 5%',
 			'type' => 'sale',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-5%',
 		));
 		$cartCondition2 = new Condition(array(
 			'name' => 'Item Gift Pack 2500',
 			'type' => 'promo',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-25',
 		));
 
@@ -665,19 +664,19 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 		$cartCondition1 = new Condition(array(
 			'name' => 'SALE 5%',
 			'type' => 'sale',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-5%',
 		));
 		$cartCondition2 = new Condition(array(
 			'name' => 'Item Gift Pack 2500',
 			'type' => 'promo',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-2500',
 		));
 		$cartCondition3 = new Condition(array(
 			'name' => 'Item Less 8%',
 			'type' => 'promo',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-8%',
 		));
 
@@ -711,19 +710,19 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 		$cartCondition1 = new Condition(array(
 			'name' => 'SALE 5%',
 			'type' => 'sale',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-5%',
 		));
 		$cartCondition2 = new Condition(array(
 			'name' => 'Item Gift Pack 20',
 			'type' => 'promo',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-2500',
 		));
 		$cartCondition3 = new Condition(array(
 			'name' => 'Item Less 8%',
 			'type' => 'promo',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-8%',
 		));
 
@@ -749,7 +748,7 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 		$cartCondition1 = new Condition(array(
 			'name' => 'SALE 5%',
 			'type' => 'sale',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-5%'
 		));
 
@@ -779,7 +778,7 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 		$cartCondition1 = new Condition(array(
 			'name' => 'SALE 5%',
 			'type' => 'sale',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-5%',
 			'attributes' => array(
 				'description' => 'october fest promo sale',

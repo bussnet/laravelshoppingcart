@@ -27,6 +27,18 @@ class Item extends Collection {
 	 * @return void
 	 */
 	public function __construct($attributes) {
+		// make conditions as array and set target to item if not set
+		if (isset($attributes['conditions']) && !empty($attributes['conditions']))
+			if (!is_array($attributes['conditions']))
+				$attributes['conditions'] = [$attributes['conditions']];
+			collect($attributes['conditions'])->transform(function($condition) {
+				if ($condition instanceof Condition) {
+					if ($condition->getTarget() == 'cart')
+						return false;
+					$condition->setTarget('item');
+				} else
+					$condition['target'] = 'item';
+			});
 		parent::__construct($attributes);
 	}
 
@@ -40,6 +52,11 @@ class Item extends Collection {
 		return $this->price() * $this->quantity;
 	}
 
+	/**
+	 * return property
+	 * @param $name
+	 * @return mixed|null
+	 */
 	public function __get($name) {
 		if ($this->has($name)) return $this->get($name);
 		return null;
@@ -106,4 +123,22 @@ class Item extends Collection {
 	public function priceSumWithConditions() {
 		return $this->priceWithConditions() * $this->quantity;
 	}
+
+	/**
+	 * Get the collection of items as a plain array.
+	 *
+	 * @return array
+	 */
+	public function toArray() {
+		$arr = parent::toArray();
+		if (!empty($arr['conditions'])) {
+			$cond = $arr['conditions'];
+			unset($arr['conditions']);
+			foreach ($cond as $k => $v) {
+				$arr['conditions'][$v->getName()] = $v->toArray();
+			}
+		}
+		return $arr;
+	}
+
 }

@@ -61,7 +61,7 @@ class CurrencyCart extends Cart {
 		$process = 0;
 
 		$this->getConditions()->each(function ($cond) use ($subTotal, &$newTotal, &$process) {
-			if ($cond->getTarget() === 'subtotal') {
+			if ($cond->getTarget() === 'cart') {
 				($process > 0) ? $toBeCalculated = $newTotal : $toBeCalculated = $subTotal;
 				$newTotal = $cond->applyCondition($toBeCalculated);
 				$process++;

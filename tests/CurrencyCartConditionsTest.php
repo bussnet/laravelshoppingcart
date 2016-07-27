@@ -8,6 +8,7 @@
 
 use Bnet\Cart\Condition;
 use Bnet\Cart\CurrencyCart;
+use Bnet\Cart\CurrencyCondition;
 use Bnet\Money\Money;
 use Mockery as m;
 
@@ -85,7 +86,7 @@ class CurrencyCartConditionTest extends PHPUnit_Framework_TestCase {
 		$condition = new Condition(array(
 			'name' => 'VAT 12.5%',
 			'type' => 'tax',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '12.5%',
 		));
 
@@ -107,13 +108,13 @@ class CurrencyCartConditionTest extends PHPUnit_Framework_TestCase {
 		$condition1 = new Condition(array(
 			'name' => 'VAT 12.5%',
 			'type' => 'tax',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '12.5%',
 		));
 		$condition2 = new Condition(array(
 			'name' => 'Express Shipping $15',
 			'type' => 'shipping',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '+1500',
 		));
 
@@ -136,13 +137,13 @@ class CurrencyCartConditionTest extends PHPUnit_Framework_TestCase {
 		$condition1 = new Condition(array(
 			'name' => 'VAT 12.5%',
 			'type' => 'tax',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '12.5%',
 		));
 		$condition2 = new Condition(array(
 			'name' => 'Express Shipping $15',
 			'type' => 'shipping',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-1500',
 		));
 
@@ -165,13 +166,13 @@ class CurrencyCartConditionTest extends PHPUnit_Framework_TestCase {
 		$condition1 = new Condition(array(
 			'name' => 'VAT 12.5%',
 			'type' => 'tax',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-12.5%',
 		));
 		$condition2 = new Condition(array(
 			'name' => 'Express Shipping $15',
 			'type' => 'shipping',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-1500',
 		));
 
@@ -194,13 +195,13 @@ class CurrencyCartConditionTest extends PHPUnit_Framework_TestCase {
 		$condition1 = new Condition(array(
 			'name' => 'VAT 12.5%',
 			'type' => 'tax',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-12.5%',
 		));
 		$condition2 = new Condition(array(
 			'name' => 'Express Shipping $15',
 			'type' => 'shipping',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-1500',
 		));
 
@@ -222,13 +223,13 @@ class CurrencyCartConditionTest extends PHPUnit_Framework_TestCase {
 		$condition1 = new Condition(array(
 			'name' => 'COUPON LESS 12.5%',
 			'type' => 'tax',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-12.5%',
 		));
 		$condition2 = new Condition(array(
 			'name' => 'Express Shipping $15',
 			'type' => 'shipping',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '+1500',
 		));
 
@@ -310,7 +311,7 @@ class CurrencyCartConditionTest extends PHPUnit_Framework_TestCase {
 		$itemCondition1 = new Condition(array(
 			'name' => 'SALE 5%',
 			'type' => 'sale',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-5%',
 		)); // --> this should not be included in calculation
 		$itemCondition2 = new Condition(array(
@@ -328,7 +329,7 @@ class CurrencyCartConditionTest extends PHPUnit_Framework_TestCase {
 		$itemCondition4 = new Condition(array(
 			'name' => 'MISC 2',
 			'type' => 'misc2',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '+10%',
 		));// --> this should not be included in calculation
 
@@ -411,13 +412,13 @@ class CurrencyCartConditionTest extends PHPUnit_Framework_TestCase {
 		$itemCondition1 = new Condition(array(
 			'name' => 'SALE 5%',
 			'type' => 'sale',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-5%',
 		));
 		$itemCondition2 = new Condition(array(
 			'name' => 'Item Gift Pack 2500',
 			'type' => 'promo',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-2500',
 		));
 
@@ -437,7 +438,7 @@ class CurrencyCartConditionTest extends PHPUnit_Framework_TestCase {
 		$condition = $this->cart->getCondition($itemCondition1->getName());
 
 		$this->assertEquals($condition->getName(), 'SALE 5%');
-		$this->assertEquals($condition->getTarget(), 'subtotal');
+		$this->assertEquals($condition->getTarget(), 'cart');
 		$this->assertEquals($condition->getType(), 'sale');
 		$this->assertEquals($condition->getValue(), '-5%');
 	}
@@ -446,13 +447,13 @@ class CurrencyCartConditionTest extends PHPUnit_Framework_TestCase {
 		$itemCondition1 = new Condition(array(
 			'name' => 'SALE 5%',
 			'type' => 'sale',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-5%',
 		));
 		$itemCondition2 = new Condition(array(
 			'name' => 'Item Gift Pack 2500',
 			'type' => 'promo',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-2500',
 		));
 
@@ -588,13 +589,13 @@ class CurrencyCartConditionTest extends PHPUnit_Framework_TestCase {
 		$itemCondition1 = new Condition(array(
 			'name' => 'SALE 5%',
 			'type' => 'sale',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-5%',
 		));
 		$itemCondition2 = new Condition(array(
 			'name' => 'Item Gift Pack 2500',
 			'type' => 'promo',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-2500',
 		));
 
@@ -624,13 +625,13 @@ class CurrencyCartConditionTest extends PHPUnit_Framework_TestCase {
 		$cartCondition1 = new Condition(array(
 			'name' => 'SALE 5%',
 			'type' => 'sale',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-5%',
 		));
 		$cartCondition2 = new Condition(array(
 			'name' => 'Item Gift Pack 2500',
 			'type' => 'promo',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-25',
 		));
 
@@ -666,19 +667,19 @@ class CurrencyCartConditionTest extends PHPUnit_Framework_TestCase {
 		$cartCondition1 = new Condition(array(
 			'name' => 'SALE 5%',
 			'type' => 'sale',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-5%',
 		));
 		$cartCondition2 = new Condition(array(
 			'name' => 'Item Gift Pack 2500',
 			'type' => 'promo',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-2500',
 		));
 		$cartCondition3 = new Condition(array(
 			'name' => 'Item Less 8%',
 			'type' => 'promo',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-8%',
 		));
 
@@ -712,19 +713,19 @@ class CurrencyCartConditionTest extends PHPUnit_Framework_TestCase {
 		$cartCondition1 = new Condition(array(
 			'name' => 'SALE 5%',
 			'type' => 'sale',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-5%',
 		));
 		$cartCondition2 = new Condition(array(
 			'name' => 'Item Gift Pack 20',
 			'type' => 'promo',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-2500',
 		));
 		$cartCondition3 = new Condition(array(
 			'name' => 'Item Less 8%',
 			'type' => 'promo',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-8%',
 		));
 
@@ -750,7 +751,7 @@ class CurrencyCartConditionTest extends PHPUnit_Framework_TestCase {
 		$cartCondition1 = new Condition(array(
 			'name' => 'SALE 5%',
 			'type' => 'sale',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-5%'
 		));
 
@@ -780,7 +781,7 @@ class CurrencyCartConditionTest extends PHPUnit_Framework_TestCase {
 		$cartCondition1 = new Condition(array(
 			'name' => 'SALE 5%',
 			'type' => 'sale',
-			'target' => 'subtotal',
+			'target' => 'cart',
 			'value' => '-5%',
 			'attributes' => array(
 				'description' => 'october fest promo sale',
@@ -824,5 +825,66 @@ class CurrencyCartConditionTest extends PHPUnit_Framework_TestCase {
 		$this->cart->add(999, 'test', new Money(12345, 'USD'));
 	}
 
+	/**
+	 * @expectedException \Bnet\Cart\Exceptions\InvalidConditionException
+	 */
+	public function test_total_with_condition_with_money_exception() {
+		$items = array(
+			array(
+				'id' => 456,
+				'name' => 'Sample Item 1',
+				'price' => new Money(6799),
+				'conditions' => [
+					new Condition(array(
+						'name' => 'Test FIX 5EUR',
+						'type' => 'test',
+						'target' => 'item',
+						'value' => new Bnet\Money\Money(500, 'EUR'),
+					))
+				]
+			),
+		);
+
+		$this->cart->add($items);
+	}
+
+	public function test_total_with_condition_with_money_amount() {
+		$items = array(
+			array(
+				'id' => 456,
+				'name' => 'Sample Item 1',
+				'price' => new Money(6799),
+				'quantity' => 1,
+				'attributes' => array(),
+				'conditions' => [
+					new CurrencyCondition(array(
+						'name' => 'Test FIX 5EUR',
+						'type' => 'test',
+						'value' => new Bnet\Money\Money(500, 'EUR'),
+					))
+				]
+			),
+		);
+
+		$this->cart->add($items);
+
+		$this->assertEquals(7299, $this->cart->subTotal()->amount(), 'Cart should have sub total of 7299');
+
+		// add condition
+		$condition = new CurrencyCondition(array(
+			'name' => 'VAT 12.5%',
+			'type' => 'tax',
+//			'target' => 'cart',
+			'value' => new Bnet\Money\Money(123456, 'EUR'),
+		));
+
+		$this->cart->condition($condition);
+
+		// no changes in subtotal as the condition's target added was for total
+		$this->assertEquals(7299, $this->cart->subTotal()->amount(), 'Cart should have sub total of 7299');
+
+		// total should be changed
+		$this->assertEquals(130755, $this->cart->total()->amount(), 'Cart should have a total of 130755');
+	}
 
 }

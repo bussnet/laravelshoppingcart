@@ -39,6 +39,7 @@ class ItemTest extends PHPUnit_Framework_TestCase {
 
 		$item = $this->cart->get(455);
 
+		$this->assertEquals(455, $item->id, 'Item summed price should be 20198');
 		$this->assertEquals(20198, $item->priceSum(), 'Item summed price should be 20198');
 	}
 

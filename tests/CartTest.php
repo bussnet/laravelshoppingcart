@@ -7,6 +7,7 @@
  */
 
 use Bnet\Cart\Cart;
+use Bnet\Cart\Condition;
 use Mockery as m;
 
 require_once __DIR__ . '/helpers/SessionMock.php';
@@ -471,5 +472,131 @@ class CartTest extends PHPUnit_Framework_TestCase {
 		// now let's count the cart's quantity
 		$this->assertInternalType("int", $this->cart->totalQuantity(), 'Return type should be INT');
 		$this->assertEquals(4, $this->cart->totalQuantity(), 'Cart\'s quantity should be 4.');
+	}
+
+	public function testToArray() {
+		$items = [
+			456 => [
+				'id' => 456,
+				'name' => 'Sample Item 1',
+				'price' => \Bnet\Money\MoneyGross::fromNet(12345, 19),
+				'quantity' => 3,
+				'attributes' => [
+					'asdf'=> 'tt'
+				]
+			], 568 => [
+				'id' => 568,
+				'name' => 'Sample Item 2',
+				'price' => new \Bnet\Money\Money(6925),
+				'quantity' => 1,
+			],
+		];
+
+		$this->cart->add($items);
+
+		$items[456]['conditions'] = [];
+		$items[456]['price'] = [
+			'amount' => 14691,
+			'number' => 146.91,
+			'format' => '€146,91',
+			'currency' => 'EUR',
+			'price_net' => 12345,
+			'price_gross' => 14691,
+			'tax' => 19
+		];
+
+		$items[568]['attributes'] = [];
+		$items[568]['conditions'] = [];
+		$items[568]['price'] = [
+			'amount' => 6925,
+			'number' => 69.25,
+			'format' => '€69,25',
+			'currency' => 'EUR',
+		];
+
+		$this->assertEquals([
+			'items' =>$items,
+			'conditions' => [],
+		], $this->cart->toArray());
+	}
+
+
+	public function testToArrayWithConditions() {
+		$itemCondition = new Condition(array(
+			'name' => 'SALE 5%',
+			'type' => 'tax',
+			'target' => 'item',
+			'value' => '-5%',
+		));
+		$items = [
+			456 => [
+				'id' => 456,
+				'name' => 'Sample Item 1',
+				'price' => \Bnet\Money\MoneyGross::fromNet(12345, 19),
+				'quantity' => 3,
+				'attributes' => [
+					'asdf' => 'tt'
+				], 'conditions' => [
+					$itemCondition
+				]
+			], 568 => [
+				'id' => 568,
+				'name' => 'Sample Item 2',
+				'price' => new \Bnet\Money\Money(6925),
+				'quantity' => 1,
+			],
+		];
+
+		$this->cart->add($items);
+
+		// add condition
+		$condition = new Condition(array(
+			'name' => 'VAT 12.5%',
+			'type' => 'tax',
+			'target' => 'cart',
+			'value' => '12.5%',
+		));
+
+		$this->cart->condition($condition);
+
+		$items[456]['conditions'] = [
+			'SALE 5%' => [
+				'name' => 'SALE 5%',
+				'type' => 'tax',
+				'target' => 'item',
+				'value' => '-5%',
+			]
+		];
+		$items[456]['price'] = [
+			'amount' => 14691,
+			'number' => 146.91,
+			'format' => '€146,91',
+			'currency' => 'EUR',
+			'price_net' => 12345,
+			'price_gross' => 14691,
+			'tax' => 19
+		];
+
+		$items[568]['attributes'] = [];
+		$items[568]['conditions'] = [];
+		$items[568]['price'] = [
+			'amount' => 6925,
+			'number' => 69.25,
+			'format' => '€69,25',
+			'currency' => 'EUR',
+		];
+
+		$cart_arr = [
+			'items' => $items,
+			'conditions' => [
+				'VAT 12.5%' => [
+					'name' => 'VAT 12.5%',
+					'type' => 'tax',
+					'target' => 'cart',
+					'value' => '12.5%',
+				]
+			]
+		];
+		$this->assertEquals($cart_arr, $this->cart->toArray());
 	}
 }
