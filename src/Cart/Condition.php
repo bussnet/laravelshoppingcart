@@ -224,4 +224,7 @@ class Condition extends Collection {
 		return null;
 	}
 
+	public function __isset($name) {
+		return $this->has($name);
+	}
 }

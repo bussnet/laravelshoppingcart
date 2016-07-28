@@ -28,10 +28,10 @@ class Item extends Collection {
 	 */
 	public function __construct($attributes) {
 		// make conditions as array and set target to item if not set
-		if (isset($attributes['conditions']) && !empty($attributes['conditions']))
+		if (isset($attributes['conditions']) && !empty($attributes['conditions'])) {
 			if (!is_array($attributes['conditions']))
 				$attributes['conditions'] = [$attributes['conditions']];
-			collect($attributes['conditions'])->transform(function($condition) {
+			collect($attributes['conditions'])->transform(function ($condition) {
 				if ($condition instanceof Condition) {
 					if ($condition->getTarget() == 'cart')
 						return false;
@@ -39,6 +39,7 @@ class Item extends Collection {
 				} else
 					$condition['target'] = 'item';
 			});
+		}
 		parent::__construct($attributes);
 	}
 
@@ -60,6 +61,10 @@ class Item extends Collection {
 	public function __get($name) {
 		if ($this->has($name)) return $this->get($name);
 		return null;
+	}
+
+	public function __isset($name) {
+		return $this->has($name);
 	}
 
 	/**

@@ -15,4 +15,9 @@ class Attribute extends Collection {
 		if ($this->has($name)) return $this->get($name);
 		return null;
 	}
+
+	public function __isset($name) {
+		return $this->has($name);
+	}
+
 }
