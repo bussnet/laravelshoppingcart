@@ -47,7 +47,7 @@ class CurrencyCondition extends Condition {
 	 * @return int
 	 */
 	protected function applyWithQuantity($totalOrSubTotalOrPrice, $conditionValue, $quantity = 1) {
-		return $this->getQuantityUndepended()
+		return $this->getQuantityIndependent()
 			? $this->apply($totalOrSubTotalOrPrice, $conditionValue)
 			: $this->apply($totalOrSubTotalOrPrice, $conditionValue) * $quantity;
 	}

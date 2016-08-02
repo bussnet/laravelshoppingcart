@@ -99,8 +99,8 @@ class Condition extends Collection {
 	/**
 	 * should the amount be multiplied by the item quantity
 	 */
-	public function getQuantityUndepended() {
-		return $this->get('quantity_undepended', false);
+	public function getQuantityIndependent() {
+		return $this->get('quantity_independent', false);
 	}
 
 	/**
@@ -173,7 +173,7 @@ class Condition extends Collection {
 	 * @return int
 	 */
 	protected function applyWithQuantity($totalOrSubTotalOrPrice, $conditionValue, $quantity=1) {
-		return $this->apply($totalOrSubTotalOrPrice, $conditionValue) * ($this->getQuantityUndepended() ? 1 : $quantity);
+		return $this->apply($totalOrSubTotalOrPrice, $conditionValue) * ($this->getQuantityIndependent() ? 1 : $quantity);
 	}
 
 	/**

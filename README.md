@@ -81,6 +81,7 @@ Cart::add(array(
       'name' => 'Sample Item 1',
       'price' => 67.99,
       'quantity' => 4,
+      'quantity_independent' => true, // only one for item, not multiply with quantity
       'attributes' => array()
   ),
   array(
@@ -702,6 +703,14 @@ $items->each(function($item)
 ```
 
 ## Changelogs
+
+**3.1.3
+- add attributes to cart
+- change condition calcuation behaviour
+- add Condition attribute "quantity_independent" to calculate the condition only once per item, not multiply with the quantity
+
+**3.1.2
+- add __isset() to the __get() function
 
 **3.1.1
 - cart is completly "Arrayable"

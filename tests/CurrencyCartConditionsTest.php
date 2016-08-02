@@ -892,28 +892,28 @@ class CurrencyCartConditionTest extends PHPUnit_Framework_TestCase {
 			'name' => 'Test Fix 500',
 			'type' => 'sale',
 			'target' => 'item',
-			'quantity_undepended' => true,
+			'quantity_independent' => true,
 			'value' => new Money(500)
 		));
 		$itemCondition1 = new CurrencyCondition(array(
 			'name' => 'Test 10%',
 			'type' => 'sale',
 			'target' => 'item',
-			'quantity_undepended' => true,
+			'quantity_independent' => true,
 			'value' => '+10%'
 		));
 		$itemCondition2 = new CurrencyCondition(array(
 			'name' => 'Test 10% per Item',
 			'type' => 'sale',
 			'target' => 'item',
-			'quantity_undepended' => false,
+			'quantity_independent' => false,
 			'value' => '+10%'
 		));
 		$itemCondition3 = new CurrencyCondition(array(
 			'name' => 'Test Fix 250',
 			'type' => 'sale',
 			'target' => 'item',
-			'quantity_undepended' => false,
+			'quantity_independent' => false,
 			'value' => new Money(250)
 		));
 
@@ -932,12 +932,12 @@ class CurrencyCartConditionTest extends PHPUnit_Framework_TestCase {
 		);
 
 		$this->cart->add($item);
-		# Fix quantity undependend
+		# Fix quantity independent
 		$this->assertEquals(500, $itemCondition->applyCondition(0), 'condition');
 		$this->assertEquals(500, $itemCondition->applyConditionWithQuantity(0, 3), 'Quantitycondition');
 		$this->assertEquals(500, $itemCondition->applyConditionWithQuantity(1000, 3), 'Quantitycondition +itemAmount');
 
-		# % quantity undependend
+		# % quantity independent
 		$this->assertEquals(0, $itemCondition1->applyCondition(0), 'condition');
 		$this->assertEquals(10, $itemCondition1->applyCondition(100), 'condition');
 		$this->assertEquals(10, $itemCondition1->applyConditionWithQuantity(100, 3), 'Quantitycondition +itemAmount');
@@ -961,14 +961,14 @@ class CurrencyCartConditionTest extends PHPUnit_Framework_TestCase {
 			'name' => 'Test1',
 			'type' => 'sale',
 			'target' => 'item',
-			'quantity_undepended' => true,
+			'quantity_independent' => true,
 			'value' => new Money(500)
 		));
 		$itemCondition1 = new CurrencyCondition(array(
 			'name' => 'Test1',
 			'type' => 'sale',
 			'target' => 'item',
-			'quantity_undepended' => true,
+			'quantity_independent' => true,
 			'value' => new Money(500)
 		));
 
