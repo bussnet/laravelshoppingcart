@@ -52,15 +52,12 @@ class CurrencyItem extends Item {
 	public function priceWithConditions() {
 		$originalPrice = $this->price->amount();
 		$newPrice = 0;
-		$processed = 0;
 
 		if ($this->hasConditions()) {
 			if (is_array($this->conditions)) {
 				foreach ($this->conditions as $condition) {
 					if ($condition->getTarget() === 'item') {
-						($processed > 0) ? $toBeCalculated = $newPrice : $toBeCalculated = $originalPrice;
-						$newPrice = $condition->applyCondition($toBeCalculated);
-						$processed++;
+						$newPrice += $condition->applyCondition($originalPrice);
 					}
 				}
 			} else {
@@ -69,7 +66,9 @@ class CurrencyItem extends Item {
 				}
 			}
 
-			return new Money((int)$newPrice, $this->currency);
+			$newPrice = (int)($originalPrice + $newPrice);
+			$newPrice = $newPrice > 0 ? $newPrice : 0;
+			return new Money($newPrice, $this->currency);
 		}
 		return new Money((int)$originalPrice, $this->currency);
 	}
@@ -80,7 +79,26 @@ class CurrencyItem extends Item {
 	 * @return Money
 	 */
 	public function priceSumWithConditions() {
-		return $this->priceWithConditions()->multiply($this->quantity);
+		$originalPrice = $this->price->amount();
+		$newPrice = 0;
+
+		if ($this->hasConditions()) {
+			if (is_array($this->conditions)) {
+				foreach ($this->conditions as $condition) {
+					if ($condition->getTarget() === 'item') {
+						$newPrice += $condition->applyConditionWithQuantity($originalPrice, $this->quantity);
+					}
+				}
+			} else {
+				if ($this['conditions']->getTarget() === 'item') {
+					$newPrice = $this['conditions']->applyConditionWithQuantity($originalPrice, $this->quantity);
+				}
+			}
+			$newPrice += ($this->quantity * $originalPrice);
+			return new Money((int)($newPrice > 0 ? $newPrice : 0), $this->currency);
+		}
+		$m = new Money((int)$originalPrice, $this->currency);
+		return $m->multiply($this->quantity);
 	}
 	
 }

@@ -48,6 +48,11 @@ class Cart implements Jsonable, \JsonSerializable, Arrayable{
 	 */
 	protected $sessionKeyCartConditions;
 
+	/**
+	 * @var \Illuminate\Support\Collection
+	 */
+	public $attributes;
+
 	protected $item_rules = array(
 		'id' => 'required',
 //		'price' => 'required|numeric',
@@ -73,6 +78,7 @@ class Cart implements Jsonable, \JsonSerializable, Arrayable{
 		$this->events->fire($this->getInstanceName() . '.created', array($this));
 		if (!empty($custom_item_rules))
 			$this->item_rules = $custom_item_rules;
+		$this->attributes = collect();
 	}
 
 	/**
@@ -485,9 +491,7 @@ class Cart implements Jsonable, \JsonSerializable, Arrayable{
 	 * @return int
 	 */
 	public function subTotal() {
-		$cart = $this->items();
-
-		$sum = $cart->sum(function (Item $item) {
+		$sum = $this->items()->sum(function (Item $item) {
 			return $item->priceSumWithConditions();
 		});
 
@@ -500,28 +504,18 @@ class Cart implements Jsonable, \JsonSerializable, Arrayable{
 	 * @return int
 	 */
 	public function total() {
+		if ($this->getConditions()->isEmpty())
+			return $this->subTotal();
+
 		$subTotal = $this->subTotal();
 
-		$newTotal = 0;
-
-		$process = 0;
-
-		$conditions = $this->getConditions();
-
-		// if no conditions were added, just return the sub total
-		if (!$conditions->count()) return $subTotal;
-
-		$conditions->each(function ($cond) use ($subTotal, &$newTotal, &$process) {
-			if ($cond->getTarget() === 'cart') {
-				($process > 0) ? $toBeCalculated = $newTotal : $toBeCalculated = $subTotal;
-
-				$newTotal = $cond->applyCondition($toBeCalculated);
-
-				$process++;
-			}
+		$condTotal = $this->getConditions()->sum(function ($cond) use ($subTotal) {
+			return $cond->getTarget() === 'cart'
+				? $cond->applyCondition($subTotal)
+				: 0;
 		});
 
-		return $newTotal;
+		return $subTotal + $condTotal;
 	}
 
 	/**
@@ -751,5 +745,22 @@ EOF;
 		return $this->toArray();
 	}
 
+	/**
+	 * Add an attribute vor the cart
+	 * @param $key
+	 * @param $value
+	 */
+	public function addAttribute($key, $value) {
+		$this->attributes->offsetSet($key, $value);
+	}
+
+	/**
+	 * @param $key
+	 * @param null $default
+	 * @return mixed
+	 */
+	public function getAttribute($key, $default = null) {
+		return $this->attributes->get($key, $default);
+	}
 
 }

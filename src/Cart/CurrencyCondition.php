@@ -23,7 +23,6 @@ class CurrencyCondition extends Condition {
 		parent::__construct($args);
 	}
 
-
 	/**
 	 * apply condition
 	 *
@@ -35,12 +34,22 @@ class CurrencyCondition extends Condition {
 		if ($conditionValue instanceof Money) {
 			$this->parsedRawValue = $conditionValue->amount();
 
-			$result = Helpers::intval($totalOrSubTotalOrPrice + $this->parsedRawValue);
-
-			// Do not allow items with negative prices.
-			return $result < 0 ? 0 : $result;
+			return Helpers::intval($this->parsedRawValue);
 		}
 		return parent::apply($totalOrSubTotalOrPrice, $conditionValue);
+	}
+
+	/**
+	 * apply condition with the given quantity
+	 *
+	 * @param $totalOrSubTotalOrPrice
+	 * @param $conditionValue
+	 * @return int
+	 */
+	protected function applyWithQuantity($totalOrSubTotalOrPrice, $conditionValue, $quantity = 1) {
+		return $this->getQuantityUndepended()
+			? $this->apply($totalOrSubTotalOrPrice, $conditionValue)
+			: $this->apply($totalOrSubTotalOrPrice, $conditionValue) * $quantity;
 	}
 
 }

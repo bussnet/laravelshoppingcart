@@ -97,6 +97,13 @@ class Condition extends Collection {
 	}
 
 	/**
+	 * should the amount be multiplied by the item quantity
+	 */
+	public function getQuantityUndepended() {
+		return $this->get('quantity_undepended', false);
+	}
+
+	/**
 	 * apply condition to total or subtotal
 	 *
 	 * @param $totalOrSubTotalOrPrice
@@ -104,6 +111,17 @@ class Condition extends Collection {
 	 */
 	public function applyCondition($totalOrSubTotalOrPrice) {
 		return $this->apply($totalOrSubTotalOrPrice, $this->getValue());
+	}
+
+	/**
+	 * apply condition to total or subtotal
+	 *
+	 * @param $totalOrSubTotalOrPrice
+	 * @param int $quantity
+	 * @return int
+	 */
+	public function applyConditionWithQuantity($totalOrSubTotalOrPrice, $quantity) {
+		return $this->applyWithQuantity($totalOrSubTotalOrPrice, $this->getValue(), $quantity);
 	}
 
 	/**
@@ -132,32 +150,30 @@ class Condition extends Collection {
 		// percentage, whether to add or subtract it to the total/subtotal/price
 		// if we can't find any plus/minus sign, we will assume it as plus sign
 		if ($this->valueIsPercentage($conditionValue)) {
-
 			$value = Helpers::normalizePercentage($this->cleanValue($conditionValue));
 			$this->parsedRawValue = $totalOrSubTotalOrPrice * ($value / 100);
-
-			if ($this->valueIsToBeSubtracted($conditionValue)) {
-				$result = Helpers::intval($totalOrSubTotalOrPrice - $this->parsedRawValue);
-			} else {
-				$result = Helpers::intval($totalOrSubTotalOrPrice + $this->parsedRawValue);
-			}
 		}
 
 		// if the value has no percent sign on it, the operation will not be a percentage
 		// next is we will check if it has a minus/plus sign so then we can just deduct it to total/subtotal/price
 		else {
-
 			$this->parsedRawValue = Helpers::normalizePrice($this->cleanValue($conditionValue));
-
-			if ($this->valueIsToBeSubtracted($conditionValue)) {
-				$result = Helpers::intval($totalOrSubTotalOrPrice - $this->parsedRawValue);
-			} else {
-				$result = Helpers::intval($totalOrSubTotalOrPrice + $this->parsedRawValue);
-			}
 		}
 
-		// Do not allow items with negative prices.
-		return $result < 0 ? 0 : $result;
+		return $this->valueIsToBeSubtracted($conditionValue)
+			? Helpers::intval(-$this->parsedRawValue)
+			: Helpers::intval($this->parsedRawValue);
+	}
+
+	/**
+	 * apply condition with the given quantity
+	 *
+	 * @param $totalOrSubTotalOrPrice
+	 * @param $conditionValue
+	 * @return int
+	 */
+	protected function applyWithQuantity($totalOrSubTotalOrPrice, $conditionValue, $quantity=1) {
+		return $this->apply($totalOrSubTotalOrPrice, $conditionValue) * ($this->getQuantityUndepended() ? 1 : $quantity);
 	}
 
 	/**

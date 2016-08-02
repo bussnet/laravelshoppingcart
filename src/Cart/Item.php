@@ -29,8 +29,11 @@ class Item extends Collection {
 	public function __construct($attributes) {
 		// make conditions as array and set target to item if not set
 		if (isset($attributes['conditions']) && !empty($attributes['conditions'])) {
+			// force conditions as array
 			if (!is_array($attributes['conditions']))
 				$attributes['conditions'] = [$attributes['conditions']];
+
+			// check/set the target
 			collect($attributes['conditions'])->transform(function ($condition) {
 				if ($condition instanceof Condition) {
 					if ($condition->getTarget() == 'cart')
@@ -98,23 +101,17 @@ class Item extends Collection {
 	public function priceWithConditions() {
 		$originalPrice = $this->price();
 		$newPrice = 0;
-		$processed = 0;
 
 		if ($this->hasConditions()) {
 			if (is_array($this->conditions)) {
 				foreach ($this->conditions as $condition) {
 					if ($condition->getTarget() === 'item') {
-						($processed > 0) ? $toBeCalculated = $newPrice : $toBeCalculated = $originalPrice;
-						$newPrice = $condition->applyCondition($toBeCalculated);
-						$processed++;
+						$newPrice += $condition->applyCondition($originalPrice);
 					}
 				}
-			} else {
-				if ($this['conditions']->getTarget() === 'item') {
-					$newPrice = $this['conditions']->applyCondition($originalPrice);
-				}
 			}
-
+			$newPrice = (int)($originalPrice + $newPrice);
+			$newPrice = $newPrice > 0 ? $newPrice : 0;
 			return $newPrice;
 		}
 		return $originalPrice;
@@ -126,7 +123,22 @@ class Item extends Collection {
 	 * @return mixed|null
 	 */
 	public function priceSumWithConditions() {
-		return $this->priceWithConditions() * $this->quantity;
+		$originalPrice = $this->price();
+		$newPrice = 0;
+
+		if ($this->hasConditions()) {
+			if (is_array($this->conditions)) {
+				foreach ($this->conditions as $condition) {
+					if ($condition->getTarget() === 'item') {
+						$newPrice += $condition->applyConditionWithQuantity($originalPrice, $this->quantity);
+					}
+				}
+			}
+
+			$newPrice += ($this->quantity * $originalPrice);
+			return $newPrice > 0 ? $newPrice : 0;
+		}
+		return $originalPrice * $this->quantity;
 	}
 
 	/**

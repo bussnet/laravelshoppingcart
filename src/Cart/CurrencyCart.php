@@ -44,6 +44,7 @@ class CurrencyCart extends Cart {
 		$sum = $this->items()->sum(function (CurrencyItem $item) {
 			return $item->priceSumWithConditions()->amount();
 		});
+
 		return new Money($sum, $this->currency);
 	}
 
@@ -57,18 +58,14 @@ class CurrencyCart extends Cart {
 			return $this->subTotal();
 
 		$subTotal = $this->subTotal()->amount();
-		$newTotal = 0;
-		$process = 0;
 
-		$this->getConditions()->each(function ($cond) use ($subTotal, &$newTotal, &$process) {
-			if ($cond->getTarget() === 'cart') {
-				($process > 0) ? $toBeCalculated = $newTotal : $toBeCalculated = $subTotal;
-				$newTotal = $cond->applyCondition($toBeCalculated);
-				$process++;
-			}
+		$condTotal = $this->getConditions()->sum(function ($cond) use ($subTotal) {
+			return $cond->getTarget() === 'cart'
+				? $cond->applyCondition($subTotal)
+				: 0;
 		});
 
-		return new Money((int)$newTotal, $this->currency);
+		return new Money((int)($subTotal + $condTotal), $this->currency);
 	}
 
 	/**
