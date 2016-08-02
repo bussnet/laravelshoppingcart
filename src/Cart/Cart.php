@@ -248,21 +248,7 @@ class Cart implements Jsonable, \JsonSerializable, Arrayable{
 	 */
 	public function addItemCondition($productId, Condition $itemCondition) {
 		if ($product = $this->get($productId)) {
-			// we need to copy first to a temporary variable to hold the conditions
-			// to avoid hitting this error "Indirect modification of overloaded element of Bnet\Cart\Item has no effect"
-			// this is due to laravel Collection instance that implements Array Access
-			// // see link for more info: http://stackoverflow.com/questions/20053269/indirect-modification-of-overloaded-element-of-splfixedarray-has-no-effect
-			$itemConditionTempHolder = $product['conditions'];
-
-			if (is_array($itemConditionTempHolder)) {
-				array_push($itemConditionTempHolder, $itemCondition);
-			} else {
-				$itemConditionTempHolder = $itemCondition;
-			}
-
-			$this->update($productId, array(
-				'conditions' => $itemConditionTempHolder // the newly updated conditions
-			));
+			$product->conditions[$itemCondition->getName()] = $itemCondition;
 		}
 
 		return $this;
@@ -410,45 +396,8 @@ class Cart implements Jsonable, \JsonSerializable, Arrayable{
 			return false;
 		}
 
-		if ($this->itemHasConditions($item)) {
-			// NOTE:
-			// we do it this way, we get first conditions and store
-			// it in a temp variable $originalConditions, then we will modify the array there
-			// and after modification we will store it again on $item['conditions']
-			// This is because of ArrayAccess implementation
-			// see link for more info: http://stackoverflow.com/questions/20053269/indirect-modification-of-overloaded-element-of-splfixedarray-has-no-effect
-
-			$tempConditionsHolder = $item['conditions'];
-
-			// if the item's conditions is in array format
-			// we will iterate through all of it and check if the name matches
-			// to the given name the user wants to remove, if so, remove it
-			if (is_array($tempConditionsHolder)) {
-				foreach ($tempConditionsHolder as $k => $condition) {
-					if ($condition->getName() == $conditionName) {
-						unset($tempConditionsHolder[$k]);
-					}
-				}
-
-				$item['conditions'] = $tempConditionsHolder;
-			}
-
-			// if the item condition is not an array, we will check if it is
-			// an instance of a Condition, if so, we will check if the name matches
-			// on the given condition name the user wants to remove, if so,
-			// lets just make $item['conditions'] an empty array as there's just 1 condition on it anyway
-			else {
-				if ($item['conditions'] instanceof Condition) {
-					if ($tempConditionsHolder->getName() == $conditionName) {
-						$item['conditions'] = array();
-					}
-				}
-			}
-		}
-
-		$this->update($itemId, array(
-			'conditions' => $item['conditions']
-		));
+		if ($this->itemHasConditions($item))
+			return $item->conditions->offsetUnset($conditionName);
 
 		return true;
 	}
@@ -464,10 +413,7 @@ class Cart implements Jsonable, \JsonSerializable, Arrayable{
 			return false;
 		}
 
-		$this->update($itemId, array(
-			'conditions' => array()
-		));
-
+		$item['conditions'] = collect([]);
 		return true;
 	}
 
@@ -626,13 +572,7 @@ class Cart implements Jsonable, \JsonSerializable, Arrayable{
 	 * @return bool
 	 */
 	protected function itemHasConditions($item) {
-		if (!isset($item['conditions']))
-			return false;
-
-		if (is_array($item['conditions']))
-			return count($item['conditions']) > 0;
-
-		return $item['conditions'] instanceof Condition;
+		return !$item->conditions->isEmpty();
 	}
 
 	/**

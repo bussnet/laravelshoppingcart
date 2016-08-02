@@ -51,26 +51,16 @@ class CurrencyItem extends Item {
 	 */
 	public function priceWithConditions() {
 		$originalPrice = $this->price->amount();
-		$newPrice = 0;
 
-		if ($this->hasConditions()) {
-			if (is_array($this->conditions)) {
-				foreach ($this->conditions as $condition) {
-					if ($condition->getTarget() === 'item') {
-						$newPrice += $condition->applyCondition($originalPrice);
-					}
-				}
-			} else {
-				if ($this['conditions']->getTarget() === 'item') {
-					$newPrice = $this['conditions']->applyCondition($originalPrice);
-				}
+		$condition_price = $this->conditions->sum(function ($condition) use ($originalPrice) {
+			if ($condition && $condition->getTarget() === 'item') {
+				return $condition->getTarget() === 'item'
+					? $condition->applyCondition($originalPrice)
+					: 0;
 			}
-
-			$newPrice = (int)($originalPrice + $newPrice);
-			$newPrice = $newPrice > 0 ? $newPrice : 0;
-			return new Money($newPrice, $this->currency);
-		}
-		return new Money((int)$originalPrice, $this->currency);
+		});
+		$newPrice = $this->returnPriceAboveZero($condition_price + $originalPrice);
+		return new Money((int)$newPrice, $this->currency);
 	}
 
 	/**
@@ -80,25 +70,16 @@ class CurrencyItem extends Item {
 	 */
 	public function priceSumWithConditions() {
 		$originalPrice = $this->price->amount();
-		$newPrice = 0;
 
-		if ($this->hasConditions()) {
-			if (is_array($this->conditions)) {
-				foreach ($this->conditions as $condition) {
-					if ($condition->getTarget() === 'item') {
-						$newPrice += $condition->applyConditionWithQuantity($originalPrice, $this->quantity);
-					}
-				}
-			} else {
-				if ($this['conditions']->getTarget() === 'item') {
-					$newPrice = $this['conditions']->applyConditionWithQuantity($originalPrice, $this->quantity);
-				}
+		$condition_price = $this->conditions->sum(function ($condition) use ($originalPrice) {
+			if ($condition && $condition->getTarget() === 'item') {
+				return $condition->getTarget() === 'item'
+					? $condition->applyConditionWithQuantity($originalPrice, $this->quantity)
+					: 0;
 			}
-			$newPrice += ($this->quantity * $originalPrice);
-			return new Money((int)($newPrice > 0 ? $newPrice : 0), $this->currency);
-		}
-		$m = new Money((int)$originalPrice, $this->currency);
-		return $m->multiply($this->quantity);
+		});
+		$newPrice = $this->returnPriceAboveZero($condition_price + ($this->quantity * $originalPrice));
+		return new Money((int)$newPrice, $this->currency);
 	}
 	
 }

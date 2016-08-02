@@ -540,7 +540,7 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 		$this->cart->removeItemCondition(456, 'SALE 5%');
 
 		// now we should have only 1 condition left on that item
-		$this->assertEmpty($this->cart->get(456)['conditions'], 'Item should have no condition now');
+		$this->assertEmpty($this->cart->get(456)->conditions, 'Item should have no condition now');
 	}
 
 	public function test_clear_item_conditions() {
@@ -832,7 +832,7 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 			'value' => '+10%'
 		));
 		$itemCondition2 = new Condition(array(
-			'name' => 'Test 10%',
+			'name' => 'Test 10% per Item',
 			'type' => 'sale',
 			'target' => 'item',
 			'quantity_undepended' => false,
@@ -882,6 +882,49 @@ class CartConditionTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(750, $itemCondition3->applyConditionWithQuantity(0, 3), 'Quantitycondition');
 		$this->assertEquals(750, $itemCondition3->applyConditionWithQuantity(1000, 3), 'Quantitycondition +itemAmount');
 
+		$this->assertEquals(35250, $this->cart->subTotal(), 'match subTotal');
 		$this->assertEquals(35250, $this->cart->total(), 'match total');
+	}
+
+
+	public function test_two_conditions_with_same_name() {
+		$itemCondition = new Condition(array(
+			'name' => 'Test1',
+			'type' => 'sale',
+			'target' => 'item',
+			'quantity_undepended' => true,
+			'value' => '500'
+		));
+		$itemCondition1 = new Condition(array(
+			'name' => 'Test1',
+			'type' => 'sale',
+			'target' => 'item',
+			'quantity_undepended' => true,
+			'value' => '500'
+		));
+
+
+		$item = array(
+			'id' => 456,
+			'name' => 'Sample Item 1',
+			'price' => 10000,
+			'quantity' => 3,
+			'conditions' => [
+				$itemCondition,
+				$itemCondition1,
+			],
+		);
+
+		$this->cart->add($item);
+
+		$this->assertEquals(500, $itemCondition->applyCondition(0), 'condition');
+		$this->assertEquals(500, $itemCondition->applyConditionWithQuantity(0, 3), 'Quantitycondition');
+		$this->assertEquals(500, $itemCondition->applyConditionWithQuantity(1000, 3), 'Quantitycondition +itemAmount');
+
+		$this->assertEquals(500, $itemCondition1->applyCondition(0), 'condition');
+		$this->assertEquals(500, $itemCondition1->applyConditionWithQuantity(0, 3), 'Quantitycondition');
+		$this->assertEquals(500, $itemCondition1->applyConditionWithQuantity(1000, 3), 'Quantitycondition +itemAmount');
+
+		$this->assertEquals(31000, $this->cart->total(), 'match total');
 	}
 }

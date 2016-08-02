@@ -27,22 +27,8 @@ class Item extends Collection {
 	 * @return void
 	 */
 	public function __construct($attributes) {
-		// make conditions as array and set target to item if not set
-		if (isset($attributes['conditions']) && !empty($attributes['conditions'])) {
-			// force conditions as array
-			if (!is_array($attributes['conditions']))
-				$attributes['conditions'] = [$attributes['conditions']];
+		$attributes['conditions'] = $this->prepareConditionCollection($attributes);
 
-			// check/set the target
-			collect($attributes['conditions'])->transform(function ($condition) {
-				if ($condition instanceof Condition) {
-					if ($condition->getTarget() == 'cart')
-						return false;
-					$condition->setTarget('item');
-				} else
-					$condition['target'] = 'item';
-			});
-		}
 		parent::__construct($attributes);
 	}
 
@@ -76,13 +62,7 @@ class Item extends Collection {
 	 * @return bool
 	 */
 	public function hasConditions() {
-		if (!isset($this['conditions']))
-			return false;
-
-		if (is_array($this['conditions']))
-			return count($this['conditions']) > 0;
-
-		return $this['conditions'] instanceof Condition;
+		return !$this->conditions || !$this->conditions->isEmpty();
 	}
 
 	/**
@@ -100,21 +80,13 @@ class Item extends Collection {
 	 */
 	public function priceWithConditions() {
 		$originalPrice = $this->price();
-		$newPrice = 0;
 
-		if ($this->hasConditions()) {
-			if (is_array($this->conditions)) {
-				foreach ($this->conditions as $condition) {
-					if ($condition->getTarget() === 'item') {
-						$newPrice += $condition->applyCondition($originalPrice);
-					}
-				}
-			}
-			$newPrice = (int)($originalPrice + $newPrice);
-			$newPrice = $newPrice > 0 ? $newPrice : 0;
-			return $newPrice;
-		}
-		return $originalPrice;
+		$condition_price = $this->conditions->sum(function ($condition) use ($originalPrice) {
+			return ($condition && $condition->getTarget() === 'item')
+				? $condition->applyCondition($originalPrice)
+				: 0;
+		});
+		return $this->returnPriceAboveZero($condition_price + ($this->quantity * $originalPrice));
 	}
 
 	/**
@@ -124,21 +96,24 @@ class Item extends Collection {
 	 */
 	public function priceSumWithConditions() {
 		$originalPrice = $this->price();
-		$newPrice = 0;
 
-		if ($this->hasConditions()) {
-			if (is_array($this->conditions)) {
-				foreach ($this->conditions as $condition) {
-					if ($condition->getTarget() === 'item') {
-						$newPrice += $condition->applyConditionWithQuantity($originalPrice, $this->quantity);
-					}
-				}
-			}
+		$condition_price = $this->conditions->sum(function ($condition) use ($originalPrice) {
+			return ($condition && $condition->getTarget() === 'item')
+				? $condition->applyConditionWithQuantity($originalPrice, $this->quantity)
+				: 0;
+		});
+		return $this->returnPriceAboveZero($condition_price + ($this->quantity * $originalPrice));
+	}
 
-			$newPrice += ($this->quantity * $originalPrice);
-			return $newPrice > 0 ? $newPrice : 0;
-		}
-		return $originalPrice * $this->quantity;
+	/**
+	 * assert that the price is > 0
+	 * @param $price
+	 * @return int
+	 */
+	protected function returnPriceAboveZero($price) {
+		return $price > 0
+			? $price
+			: 0;
 	}
 
 	/**
@@ -149,13 +124,50 @@ class Item extends Collection {
 	public function toArray() {
 		$arr = parent::toArray();
 		if (!empty($arr['conditions'])) {
-			$cond = $arr['conditions'];
-			unset($arr['conditions']);
-			foreach ($cond as $k => $v) {
-				$arr['conditions'][$v->getName()] = $v->toArray();
-			}
+			/** @var Collection $cond */
+			$cond = $this['conditions'];
+			$arr['conditions'] = $cond->keyBy('name')->toArray();
 		}
 		return $arr;
+	}
+
+	/**
+	 * make conditions as array and set target to item if not set
+	 * @param $attributes
+	 * @return mixed
+	 */
+	protected function prepareConditionCollection($attributes) {
+		if (!isset($attributes['conditions']))
+			$conditions = collect([]);
+		elseif ($attributes['conditions'] instanceOf Condition || !is_array($attributes['conditions']))
+			$conditions = collect([$attributes['conditions']]);
+		else
+			$conditions = collect($attributes['conditions']);
+
+		$uniqueKeys = collect(); //list of keys to garantie uniquness
+		// check/set the target
+		$conditions = $conditions->map(function ($condition) {
+			if (!$condition instanceof Condition)
+				$condition = new Condition($condition);
+
+			// ignore target==cart conditions
+			if ($condition->getTarget() == 'cart')
+				return false;
+			$condition->setTarget('item'); // set item as default it not set
+
+			return $condition;
+		})->keyBy(function ($cond) use (&$uniqueKeys) {
+			// use name as key and verify that the key is unique
+			$key = $cond->name;
+			$postfix = '';
+			while ($uniqueKeys->contains($key . $postfix)) {
+				$postfix = empty($postfix) ? 1 : ($postfix + 1);
+			}
+			$uniqueKeys->push($key . $postfix);
+			return $key . $postfix;
+		});
+
+		return $conditions;
 	}
 
 }
