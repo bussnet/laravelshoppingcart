@@ -6,6 +6,7 @@ use Bnet\Cart\Helpers\Helpers;
 use Bnet\Cart\Validators\ItemValidator;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
+use Illuminate\Support\Collection;
 
 /**
  * Class Cart
@@ -49,9 +50,11 @@ class Cart implements Jsonable, \JsonSerializable, Arrayable{
 	protected $sessionKeyCartConditions;
 
 	/**
-	 * @var \Illuminate\Support\Collection
+	 * the session key use to persist cart attributes
+	 *
+	 * @var
 	 */
-	public $attributes;
+	protected $sessionKeyCartAttributes;
 
 	protected $item_rules = array(
 		'id' => 'required',
@@ -73,12 +76,12 @@ class Cart implements Jsonable, \JsonSerializable, Arrayable{
 		$this->events = $events;
 		$this->session = $session;
 		$this->instanceName = $instanceName;
+		$this->sessionKeyCartAttributes = $session_key . '_cart_attributes';
 		$this->sessionKeyCartItems = $session_key . '_cart_items';
 		$this->sessionKeyCartConditions = $session_key . '_cart_conditions';
 		$this->events->fire($this->getInstanceName() . '.created', array($this));
 		if (!empty($custom_item_rules))
 			$this->item_rules = $custom_item_rules;
-		$this->attributes = collect();
 	}
 
 	/**
@@ -686,21 +689,61 @@ EOF;
 	}
 
 	/**
-	 * Add an attribute vor the cart
-	 * @param $key
-	 * @param $value
+	 * get the collection of attributes
+	 *
+	 * @return Collection
 	 */
-	public function addAttribute($key, $value) {
-		$this->attributes->offsetSet($key, $value);
+	public function attributes() {
+		return (new Collection($this->session->get($this->sessionKeyCartAttributes)));
 	}
 
 	/**
-	 * @param $key
+	 * Add an attribute for the cart
+	 *
+	 * @param string $key
+	 * @param $value
+	 */
+	public function addAttribute($key, $value) {
+		$attributes = $this->attributes();
+		$attributes->offsetSet($key, $value);
+		$this->saveAttributes($attributes);
+	}
+
+	/**
+	 * Determine if an attribute exists in the collection by key.
+	 *
+	 * @param string $key
+	 * @return bool
+	 */
+	public function hasAttribute($key) {
+		return $this->attributes()->has($key);
+	}
+
+	/**
+	 * @param string $key
 	 * @param null $default
 	 * @return mixed
 	 */
 	public function getAttribute($key, $default = null) {
-		return $this->attributes->get($key, $default);
+		return $this->attributes()->get($key, $default);
+	}
+
+	/**
+	 * Remove an attribute from the collection by key
+	 *
+	 * @param string $key
+	 */
+	public function removeAttribute($key) {
+		$attributes = $this->attributes();
+		$attributes->offsetUnset($key);
+		$this->saveAttributes($attributes);
+	}
+
+	/**
+	 * @param Collection $attributes
+	 */
+	protected function saveAttributes(Collection $attributes) {
+		$this->session->set($this->sessionKeyCartAttributes, $attributes);
 	}
 
 }
