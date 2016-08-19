@@ -275,7 +275,7 @@ class Cart implements Jsonable, \JsonSerializable, Arrayable{
 	}
 
 	/**
-	 * clear cart
+	 * clears cart items, all attributes and condisions remain
 	 */
 	public function clear() {
 		$this->events->fire($this->getInstanceName() . '.clearing', array($this));
@@ -286,6 +286,15 @@ class Cart implements Jsonable, \JsonSerializable, Arrayable{
 		);
 
 		$this->events->fire($this->getInstanceName() . '.cleared', array($this));
+	}
+
+	/**
+	 * clears alls cart items, attributes and conditions
+	 */
+	public function clearAll() {
+		$this->clear();
+		$this->clearCartAttributes();
+		$this->clearCartConditions();
 	}
 
 	/**
@@ -430,6 +439,16 @@ class Cart implements Jsonable, \JsonSerializable, Arrayable{
 	public function clearCartConditions() {
 		$this->session->put(
 			$this->sessionKeyCartConditions,
+			array()
+		);
+	}
+
+	/**
+	 * clears all attributes on the cart
+	 */
+	public function clearCartAttributes() {
+		$this->session->put(
+			$this->sessionKeyCartAttributes,
 			array()
 		);
 	}
@@ -743,7 +762,7 @@ EOF;
 	 * @param Collection $attributes
 	 */
 	protected function saveAttributes(Collection $attributes) {
-		$this->session->set($this->sessionKeyCartAttributes, $attributes);
+		$this->session->put($this->sessionKeyCartAttributes, $attributes);
 	}
 
 }
