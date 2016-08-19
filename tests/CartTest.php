@@ -447,6 +447,17 @@ class CartTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue($this->cart->isEmpty(), 'cart should now be empty');
 	}
 
+	public function test_clearing_cart_attributes() {
+		$customer_email = 'customer@shop.com';
+		$this->cart->addAttribute('customer_email', $customer_email);
+
+		$this->assertEquals($customer_email, $this->cart->getAttribute('customer_email'), 'prove first that cart attribute was set');
+
+		$this->cart->clearCartAttributes();
+
+		$this->assertEmpty($this->cart->attributes(), 'cart should not have attributes');
+	}
+
 	public function test_cart_get_total_quantity() {
 		$items = array(
 			array(
