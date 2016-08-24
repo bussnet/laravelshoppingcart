@@ -350,6 +350,16 @@ class Cart implements Jsonable, \JsonSerializable, Arrayable{
 	}
 
 	/**
+	 * check if condition exists on the cart by its name
+	 *
+	 * @param $conditionName
+	 * @return Condition
+	 */
+	public function hasCondition($conditionName) {
+		return $this->getConditions()->has($conditionName);
+	}
+
+	/**
 	 * Get all the condition filtered by Type
 	 * Please Note that this will only return condition added on cart bases, not those conditions added
 	 * specifically on an per item bases
