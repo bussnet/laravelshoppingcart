@@ -11,8 +11,8 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "illuminate/support": "5.0.x|5.1.x|5.2.x",
-        "illuminate/validation": "5.0.x|5.1.x|5.2.x",
+        "illuminate/support": "5.0.x|5.1.x|5.2.x|5.3.x",
+        "illuminate/validation": "5.0.x|5.1.x|5.2.x|5.3.x",
         "bnet/money-datatype": "^0.1.3"
     },
     "require-dev": {
@@ -25,5 +25,5 @@
             "Bnet\\": "src/"
         }
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "stable"
 }
